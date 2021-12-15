@@ -112,6 +112,8 @@ Available endpoints
 ```
 Perfect, we can change the cooler temperature without registering the product! So by simply adjusting the temperature there we are able to melt the entrance.
 The output also provides us with the commands nessecary.
+
+# Exploit, I guess
 If you're careless you can easily melt everything by just increasing the temperature an insane amount. If you want to be careful you can increase the temperature slowly. The outcome is the same anyway.
 
 ```
