@@ -4,11 +4,11 @@ I do reccomend this box for beginners.
 
 # Enumeration
 So as always, we start out with a NMAP scan to discover what we are working with.
-```bash
+```
 ┌──(kali㉿kali)-[~/Documents/htb/paper]
 └─$ nmap -sC -sV 10.10.11.143        
 Starting Nmap 7.92 ( https://nmap.org ) at 2022-02-15 06:22 EST
-Nmap scan report for office.paper (10.10.11.143)
+Nmap scan report for 10.10.11.143
 Host is up (0.094s latency).
 Not shown: 997 closed tcp ports (conn-refused)
 PORT    STATE SERVICE  VERSION
@@ -18,28 +18,29 @@ PORT    STATE SERVICE  VERSION
 |   256 58:8c:82:1c:c6:63:2a:83:87:5c:2f:2b:4f:4d:c3:79 (ECDSA)
 |_  256 31:78:af:d1:3b:c4:2e:9d:60:4e:eb:5d:03:ec:a0:22 (ED25519)
 80/tcp  open  http     Apache httpd 2.4.37 ((centos) OpenSSL/1.1.1k mod_fcgid/2.3.9)
+| http-methods: 
+|_  Potentially risky methods: TRACE
+|_http-title: HTTP Server Test Page powered by CentOS
+|_http-generator: HTML Tidy for HTML5 for Linux version 5.7.28
 |_http-server-header: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_fcgid/2.3.9
-|_http-generator: WordPress 5.2.3
-|_http-title: Blunder Tiffin Inc. &#8211; The best paper company in the elec...
 443/tcp open  ssl/http Apache httpd 2.4.37 ((centos) OpenSSL/1.1.1k mod_fcgid/2.3.9)
-|_ssl-date: TLS randomness does not represent time
-| tls-alpn: 
-|_  http/1.1
-|_http-server-header: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_fcgid/2.3.9
-| ssl-cert: Subject: commonName=localhost.localdomain/organizationName=Unspecified/countryName=US
-| Subject Alternative Name: DNS:localhost.localdomain
-| Not valid before: 2021-07-03T08:52:34
-|_Not valid after:  2022-07-08T10:32:34
 |_http-title: HTTP Server Test Page powered by CentOS
 | http-methods: 
 |_  Potentially risky methods: TRACE
 |_http-generator: HTML Tidy for HTML5 for Linux version 5.7.28
-
+| ssl-cert: Subject: commonName=localhost.localdomain/organizationName=Unspecified/countryName=US
+| Subject Alternative Name: DNS:localhost.localdomain
+| Not valid before: 2021-07-03T08:52:34
+|_Not valid after:  2022-07-08T10:32:34
+|_ssl-date: TLS randomness does not represent time
+|_http-server-header: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_fcgid/2.3.9
+| tls-alpn: 
+|_  http/1.1
 Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
 Nmap done: 1 IP address (1 host up) scanned in 38.28 seconds
 ```
 It seems like we have a webserver at port 80 and 443. So while checking this out in firefox, we will also start a dirb scan to have some further enumeration in the background.
-```bash
+```
 ┌──(kali㉿kali)-[~/Documents/htb/paper]
 └─$ dirb http://10.10.11.143 
 -----------------             
@@ -84,7 +85,7 @@ Nikto is a server scanner, it will check for outdated software, test paths, and 
 ---------------------------------------------------------------------------
 ```
 Here you see that we actually find something. 
-Uncommon header 'x-backend-server' found, with contents: office.paper
+Uncommon header `'x-backend-server' found, with contents: office.paper`
 I have no idea what office.paper is. But it seems like the webserver is doing some sort of virtual routing. The way this is possible is that the server is pointing requests in different places based on what request it recives. Therefore by adding that to /etc/hosts, we are telling our attacking computer that every call to the chosen domain, is still directed to the ip address, but it forms the request differently. For mor information, check out wikipedia: https://en.wikipedia.org/wiki/Virtual_hosting
 ## /etc/hosts
 So lets add this to /etc/hosts, then we will be able to see the contents of that page. 
@@ -115,8 +116,9 @@ At the bottom we see that this is wordpress version 5.2.3
 </body>
 </html>
 ```
-Lets do a quick searchsploit for this
 
+Lets do a quick searchsploit for this
+```
 ┌──(kali㉿kali)-[~/Documents/htb/paper]
 └─$ searchsploit wordpress 5.2.3
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- 
@@ -251,16 +253,16 @@ NCAT_PROTO=TCP
 ---
 ```
 ## Upgrading our shell
-ssh dwight@10.10.11.143 -p Queenofblad3s!23
+`ssh dwight@10.10.11.143 -p Queenofblad3s!23`
 
 # Enumeration
 Use linpeas
-
+```
 ╔══════════╣ Sudo version                             
 ╚ https://book.hacktricks.xyz/linux-unix/privilege-escalation#sudo-version 
 Sudo version 1.8.29                      
 Vulnerable to CVE-2021-3560
-
+```
 
 # Privesc
 As it turns out it's vulnerable to the CVE-2021-3560, and the creator of the box has created a privesc POC that we can use. 
