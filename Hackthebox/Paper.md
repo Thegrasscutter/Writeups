@@ -166,6 +166,7 @@ If we were to read some of the posts we would see the hint of unsecure drafts. B
 10.10.11.143    office.paper    chat.office.paper
 ```
 ![chat register](https://i.imgur.com/5pSGxas.png)
+
 We get a register user and login page!
 
 # Chat
