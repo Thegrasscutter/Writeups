@@ -91,8 +91,8 @@ Nikto is a server scanner, it will check for outdated software, test paths, and 
 ```
 Here you see that we actually find something. 
 Uncommon header `'x-backend-server' found, with contents: office.paper`
-I have no idea what office.paper is. But it seems like the webserver is doing some sort of virtual routing. The way this is possible is that the server is pointing requests in different places based on what request it recives. Therefore by adding that to /etc/hosts, we are telling our attacking computer that every call to the chosen domain, is still directed to the ip address, but it forms the request differently. For mor information, check out wikipedia: https://en.wikipedia.org/wiki/Virtual_hosting
-## /etc/hosts
+I have no idea what office.paper is. But it seems like the webserver is doing some sort of virtual routing. The way this is possible is that the server is pointing requests in different places based on what request it recives. Therefore by adding that to /etc/hosts, we are telling our attacking computer that every call to the chosen domain, is still directed to the ip address, but it forms the request differently. For more information, check out wikipedia: https://en.wikipedia.org/wiki/Virtual_hosting
+## Blunder Tiffin
 So lets add this to /etc/hosts, then we will be able to see the contents of that page. 
 ```bash
 ┌──(kali㉿kali)-[~/Documents/htb/paper]
@@ -125,21 +125,20 @@ Lets do a quick searchsploit for this
 ```
 ┌──(kali㉿kali)-[~/Documents/htb/paper]
 └─$ searchsploit wordpress 5.2.3
----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- 
+-------------------------------------------------------------------------------------------------------------------------------------------------
  Exploit Title  Path
----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- 
-WordPress Core 5.2.3 - Cross-Site Host Modification                                                                             | php/webapps/47361.pl
-WordPress Core < 5.2.3 - Viewing Unauthenticated/Password/Private Posts                                                         | multiple/webapps/47690.md
-WordPress Core < 5.3.x - 'xmlrpc.php' Denial of Service                                                                         | php/dos/47800.py
-WordPress Plugin DZS Videogallery < 8.60 - Multiple Vulnerabilities                                                             | php/webapps/39553.txt
-WordPress Plugin iThemes Security < 7.0.3 - SQL Injection                                                                       | php/webapps/44943.txt
-WordPress Plugin Rest Google Maps < 7.11.18 - SQL Injection                                                                     | php/webapps/48918.sh
----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- 
+-------------------------------------------------------------------------------------------------------------------------------------------------
+WordPress Core 5.2.3 - Cross-Site Host Modification                                                | php/webapps/47361.pl
+WordPress Core < 5.2.3 - Viewing Unauthenticated/Password/Private Posts                            | multiple/webapps/47690.md
+WordPress Core < 5.3.x - 'xmlrpc.php' Denial of Service                                            | php/dos/47800.py
+WordPress Plugin DZS Videogallery < 8.60 - Multiple Vulnerabilities                                | php/webapps/39553.txt
+WordPress Plugin iThemes Security < 7.0.3 - SQL Injection                                          | php/webapps/44943.txt
+WordPress Plugin Rest Google Maps < 7.11.18 - SQL Injection                                        | php/webapps/48918.sh
+--------------------------------------------------------------------------------------------------------------------------------------------------
 Shellcodes: No Results
 Papers: No Results
 ```
-
-It seems like 47690 is the one that is the way with least resistance. Lets check it out:
+XXS is probably not the right way to go, and DDOSing isn't really our goal, and the others doesn't seem to fit. Therefore we are left with 47690. Lets check it out:
 ```bash
 ┌──(kali㉿kali)-[~/Documents/htb/paper]
 └─$ searchsploit -x 47690
@@ -230,6 +229,7 @@ So lets take a look at what we have, i run the env command to check out whats cu
 └─$ nc -nvlp 8080                                                                                         
 listening on [any] 8080 ...                                                                               
 connect to [10.10.10.10] from (UNKNOWN) [10.10.11.143] 46252
+
 [recyclops@paper]$ env                      
 RESPOND_TO_EDITED=true   
 ROCKETCHAT_USER=recyclops            
@@ -282,6 +282,7 @@ ls -lah /etc/cron*
 ```
 So manual enumeration is great, we have a lot of control over what we are looking at and for, but can be hard to master. So I reccomend using either ![LinEnum](https://github.com/rebootuser/LinEnum) or ![LinPeas](https://github.com/carlospolop/PEASS-ng/tree/master/linPEAS).
 I tried out linpeas becuase it is relativly new and seems to be the hottest thing on the market right now.
+I used `python3 -m http.server` to host a local http server at my attacking client, and wget on the box to retrive the files i needed. This is usually a good way to transfer files as it goesthrough http ports, something that often isn't blocked by the firewall.
 The results from linpeas is massive, but one thing stood out.
 ```
 ╔══════════╣ Sudo version                             
