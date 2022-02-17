@@ -207,7 +207,12 @@ Hilarious, so it seems like you can ask him something and he will fetch files, t
 When I see something like this i want to see what a legitimate call looks like and what a illigitimate one looks like.
 So if we ask him `list sale` he replys with:
 ```bash
-<----------- INSERT RECYCLOPS answer------------>
+ Fetching the directory listing of /sales/
+total 0
+drwxr-xr-x 4 dwight dwight 32 Jul 3 2021 .
+drwx------ 11 dwight dwight 281 Feb 6 07:51 ..
+drwxr-xr-x 2 dwight dwight 27 Sep 15 13:03 sale
+drwxr-xr-x 2 dwight dwight 27 Jul 3 2021 sale_2
 ```
 But if we ask for something like `list sale; whoami`, then he simply replys with `STOP INJECTING OS COMMANDS`.
 Another function he adds is `file reports.txt`, then he cats the file.
