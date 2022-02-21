@@ -288,6 +288,8 @@ ls -lah /etc/cron*
 So manual enumeration is great, we have a lot of control over what we are looking at and for, but can be hard to master. So I reccomend using either ![LinEnum](https://github.com/rebootuser/LinEnum) or ![LinPeas](https://github.com/carlospolop/PEASS-ng/tree/master/linPEAS).
 I tried out linpeas becuase it is relativly new and seems to be the hottest thing on the market right now.
 I used `python3 -m http.server` to host a local http server at my attacking client, and wget on the box to retrive the files i needed. This is usually a good way to transfer files as it goesthrough http ports, something that often isn't blocked by the firewall.
+
+![PeasInAction](https://i.imgur.com/VoxcMrX.png)
 The results from linpeas is massive, but one thing stood out.
 ```
 ╔══════════╣ Sudo version                             
