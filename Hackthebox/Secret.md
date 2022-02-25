@@ -348,7 +348,7 @@ Here are two expliots that could work, i chose the latter as it seems like less 
 https://github.com/berdav/CVE-2021-4034
 https://www.exploit-db.com/exploits/50689
 
-I prepare the files for transfer and transfer them with the python http server. Once the files are transferred, you simply have to run make and it will build the files for you and create a exploit program that will run the exploit.
+I prepare the files for transfer and transfer them with the python http server. Once the files are transferred, you simply have to run make and it will build the files for you and create a exploit program that will run the exploit. If you're wondering what make does its explained in further detail [here](https://www.tutorialspoint.com/unix_commands/make.htm). But simply put, it's a program that compiles bigger programs. It takes a makefile and compiles the different elements as they should be done. So therefore it's easy to write something in C and compile it with ease.
 # Root
 ```bash
 ### On the host we are attacking
