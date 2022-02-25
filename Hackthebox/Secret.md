@@ -1,7 +1,7 @@
-#Introduction
+# Introduction
 This is a box that makes you learn a bit of json, git and make. Three things I didn't know beforehand, so it's a great opportunity to learn!
 
-#Enumeration
+# Enumeration
 As always we start with a nmap scan.
 ```bash
 ┌──(kali㉿kali)-[~/Documents/HTB/secret]
@@ -91,7 +91,7 @@ content-type: application.json
 The reply is what kind of user we are, there are only two types: normal user and administrator.
 So according to the docs, if we follow this process we could register a user, authenticate it, get a authentication token and then check our privileges. If we are the admin we would get a reply that tells us our role. With that in mind we should try to get a authentication token to see if we can do any sql injects or try to register a user as admin or try the credentials in the docs.
 
-#Rabbit hole
+# Rabbit hole
 So with the general flow of the program in mind, we see that the user dasith is used in the example. If we try to register a user called dasith, we get a notification that that user excist. Therefore we could fire up hydra to do some bruteforcing to try to obtain his password.
 Hydra is extreamly picky on the syntax, and now we are trying to bruteforce through a json application. Therefore a syntax like this would suffice to find the password:
 ` hydra -l root@dasith.works -P /usr/share/wordlists/rockyou.txt "http-post-form://10.10.11.120/api/user/login:{\"email\"\: \"root@dasith.works\",\"password\"\: \"^PASS^\"}:F=Password is|must be at least:H=Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8:H=Accept-Language: en-US,en;q=0.5:H=Accept-Encoding: gzip, deflate:H=Connection: close:H=Content-Type: application/json" -s 3000`
@@ -131,7 +131,7 @@ Hydra (https://github.com/vanhauser-thc/thc-hydra) starting at 2022-02-24 16:29:
 ```
 But upon getting his auth-token and logging in to the /priv path, we get a message telling us that we are a normal user. So this doesn't help us.
 
-#Further enumeration
+# Further enumeration
 So after chasing a dead end, i check what dirb found. It found a page called download. It doesn't really give us anything. Therefore I will further fuzz the area to see if I can find a file here.
 ```bash
 ---- Scanning URL: http://10.10.11.120:3000/ ----
