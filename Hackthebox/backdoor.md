@@ -1,51 +1,65 @@
+# Introduction
+This box prooved to be quite intresting, it teaches you different techniques whithin directory traversal, remote gdb and finally a traditional privesc. I do reccomend this box as a cool way to get to know better tools, but I also have to add that it might be annoying to do becuase of the initial foothold might be one user per session.
+
+# Enumeration
+First I start with a nmap scan. It doesn't revewal anything out of the usual, I find three ports, 22, 80 and 1337.
+I'm a little unsure what I can use the 1337 port for yet so i try to connect and see if I get any errors.
+## <! -- > INSERT NMAP SCAN RESULTS
+```
+nc -nv 10.10.11.143 1337
+CONNECTED
+ls
+pwd
+whoami
+```
+Ok, so the port is open and I can connect, but it isn't giving me any feedback. So I'll let that be for now.
+Next I add backdoor.htb as an alias to 10.10.11.143 just to make sure there isn't any virtual routing that is happening so I can detect that too. As my previous writeups say, you do that by adding the ip and alias to `/etc/hosts`. After that I start a dirb scan to check out the results.
 
 
 Steps:
 Dirb
-http://backdoor.htb/wp-content/plugins/
+
 
 ```
-┌──(kali㉿kali)-[~/Documents/HTB/Backdoor]                                                                                                                                                                                                  
-└─$ dirb http://backdoor.htb                                                                                                                                                                                                                
-                                                                                                                                                                                                                                            
------------------                                                                                                                                                                                                                           
-DIRB v2.22                                                                                                                                                                                                                                  
-By The Dark Raver                                                                                                                                                                                                                           
------------------                                                                                                                                                                                                                           
-                                                                                                                                                                                                                                            
-START_TIME: Fri Feb 25 14:11:16 2022                                                                                                                                                                                                        
-URL_BASE: http://backdoor.htb/                                                                                                                                                                                                              
-WORDLIST_FILES: /usr/share/dirb/wordlists/common.txt                                                                                                                                                                                        
-                                                                                                                                                                                                                                            -----------------                                                                                                                                                                                                                           
-                                                                                                                                                                                                                                            
-GENERATED WORDS: 4612                                                                                                                                                                                                                       
-                                                                                                                                                                                                                                            
----- Scanning URL: http://backdoor.htb/ ----                                                                                                                                                                                                
-+ http://backdoor.htb/index.php (CODE:301|SIZE:0)                                                                                                                                                                                           
-+ http://backdoor.htb/server-status (CODE:403|SIZE:277)                                                                                                                                                                                     
-==> DIRECTORY: http://backdoor.htb/wp-admin/                                                                                                                                                                                                
-==> DIRECTORY: http://backdoor.htb/wp-content/                                                                                                                                                                                              
-==> DIRECTORY: http://backdoor.htb/wp-includes/                                                                                                                                                                                             
-+ http://backdoor.htb/xmlrpc.php (CODE:405|SIZE:42)                                                                                                                                                                                         
-                                                                                                                                                                                                                                            
+┌──(kali㉿kali)-[~/Documents/HTB/Backdoor]                                
+└─$ dirb http://backdoor.htb                                                    
+-----------------                                                      
+DIRB v2.22                                                    
+By The Dark Raver                                                    
+-----------------               
+START_TIME: Fri Feb 25 14:11:16 2022
+URL_BASE: http://backdoor.htb/ 
+WORDLIST_FILES: /usr/share/dirb/wordlists/common.txt                                                                   
+GENERATED WORDS: 4612                          
+---- Scanning URL: http://backdoor.htb/ ----                    
++ http://backdoor.htb/index.php (CODE:301|SIZE:0)                
++ http://backdoor.htb/server-status (CODE:403|SIZE:277)           
+==> DIRECTORY: http://backdoor.htb/wp-admin/                       
+==> DIRECTORY: http://backdoor.htb/wp-content/                     
+==> DIRECTORY: http://backdoor.htb/wp-includes/                  
++ http://backdoor.htb/xmlrpc.php (CODE:405|SIZE:42)             
 ---- Entering directory: http://backdoor.htb/wp-admin/ ---- 
-+ http://backdoor.htb/wp-admin/admin.php (CODE:302|SIZE:0)                                                                                                                                                                                  
-==> DIRECTORY: http://backdoor.htb/wp-admin/css/                                                                                                                                                                                            
-==> DIRECTORY: http://backdoor.htb/wp-admin/images/                                                                                                                                                                                         
-==> DIRECTORY: http://backdoor.htb/wp-admin/includes/                                                                                                                                                                                       
-+ http://backdoor.htb/wp-admin/index.php (CODE:302|SIZE:0)                                                                                                                                                                                  
-==> DIRECTORY: http://backdoor.htb/wp-admin/js/                                                                                                                                                                                             
-==> DIRECTORY: http://backdoor.htb/wp-admin/maint/                                                                                                                                                                                          
-==> DIRECTORY: http://backdoor.htb/wp-admin/network/                                                                                                                                                                                        
-==> DIRECTORY: http://backdoor.htb/wp-admin/user/                                                                                                                                                                                           
-                                                                                                                                                                                                                                            
++ http://backdoor.htb/wp-admin/admin.php (CODE:302|SIZE:0)          
+==> DIRECTORY: http://backdoor.htb/wp-admin/css/                
+==> DIRECTORY: http://backdoor.htb/wp-admin/images/               
+==> DIRECTORY: http://backdoor.htb/wp-admin/includes/          
++ http://backdoor.htb/wp-admin/index.php (CODE:302|SIZE:0)             
+==> DIRECTORY: http://backdoor.htb/wp-admin/js/                  
+==> DIRECTORY: http://backdoor.htb/wp-admin/maint/                
+==> DIRECTORY: http://backdoor.htb/wp-admin/network/           
+==> DIRECTORY: http://backdoor.htb/wp-admin/user/     
 ---- Entering directory: http://backdoor.htb/wp-content/ ----
-+ http://backdoor.htb/wp-content/index.php (CODE:200|SIZE:0)                                                                                                                                                                                
-==> DIRECTORY: http://backdoor.htb/wp-content/plugins/                                                                                                                                                                                      
-==> DIRECTORY: http://backdoor.htb/wp-content/themes/                                                                                                                                                                                       
-==> DIRECTORY: http://backdoor.htb/wp-content/upgrade/                                                                                                                                                                                      
++ http://backdoor.htb/wp-content/index.php (CODE:200|SIZE:0)       
+==> DIRECTORY: http://backdoor.htb/wp-content/plugins/             
+==> DIRECTORY: http://backdoor.htb/wp-content/themes/               
+==> DIRECTORY: http://backdoor.htb/wp-content/upgrade/                               
 ==> DIRECTORY: http://backdoor.htb/wp-content/uploads/   
 ```
+So there are a lot of results here, after some manual enumeration, I will point out three results:
+http://backdoor.htb/wp-admin/
+http://backdoor.htb/wp-admin/maint/
+http://backdoor.htb/wp-content/plugins/
+
 
 https://www.exploit-db.com/exploits/39575
 
