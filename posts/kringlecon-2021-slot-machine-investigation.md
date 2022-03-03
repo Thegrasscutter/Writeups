@@ -1,3 +1,6 @@
+---
+title: Kringlecon 2021 - Slot Machine Investigation
+---
 # Introduction
 This challenge is all about exploiting Jacks slotsystem. Everything can be done in browser and I really reccommend using firefox, simply becuase the interface is less confusing.
 The description for this challenge is:

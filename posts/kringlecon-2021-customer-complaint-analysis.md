@@ -1,3 +1,7 @@
+---
+title: Kringlecon 2021 - Customer Complaint Analysis
+---
+
 # Introduction
 It truely isn't christmas without wireshark. This challenge wants us to find three trolls in a packet dump of a customer complaint system.
 The description we are given is as follows: A human has accessed the Jack Frost Tower network with a non-compliant host. Which three trolls complained about the human? Enter the troll names in alphabetical order separated by spaces. Talk to Tinsel Upatree in the kitchen for hints.

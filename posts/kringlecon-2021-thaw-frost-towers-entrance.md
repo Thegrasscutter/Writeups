@@ -1,3 +1,6 @@
+---
+title: Kringlecon 2021 - Thaw Frost Tower's Entrance
+---
 # Introduction
 This challenge will grant us access to Jacks Frost Tower casino, it's ranked 2/5 christmas trees in difficulty. To gain access to this challenge you will need a wifi-adapter that you recived at the entrance. The description for the  challenge is:
 Turn up the heat to defrost the entrance to Frost Tower. Click on the Items tab in your badge to find a link to the Wifi Dongle's CLI interface. Talk to Greasy Gopherguts outside the tower for tips.

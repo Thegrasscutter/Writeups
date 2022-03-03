@@ -1,3 +1,6 @@
+---
+title: Hack the box - Paper
+---
 # Introduction
 This is a relativly easy box, it has everything you would need to get started. There isn't any manual exploits, it's just a matter of choosing the right tools for the job. 
 I do reccomend this box for beginners.
