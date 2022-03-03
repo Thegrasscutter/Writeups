@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "generate": "npx @11ty/eleventy",
-    "serve": "npx @11ty/eleventy --serve"
+    "build": "ELEVENTY_PRODUCTION=true eleventy && NODE_ENV=production npx tailwindcss -i styles/tailwind.css -c styles/tailwind.config.js -o dist/style.css --minify",
+    "start": "eleventy --serve & npx tailwindcss -i styles/tailwind.css -c styles/tailwind.config.js -o dist/style.css --watch"
   },
   "repository": {
     "type": "git",
@@ -19,6 +19,11 @@
   },
   "homepage": "https://github.com/jezpoz/Writeups#readme",
   "devDependencies": {
-    "@11ty/eleventy": "^1.0.0"
+    "@11ty/eleventy": "^1.0.0",
+    "alpinejs": "^3.9.1",
+    "html-minifier": "^4.0.0"
+  },
+  "dependencies": {
+    "tailwindcss": "^3.0.23"
   }
 }

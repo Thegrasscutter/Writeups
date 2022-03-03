@@ -4,17 +4,24 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{ title }}</title>
+  {% if description %}
+    <meta name="description" content="{{description}}"/>
+  {% endif %}
+  <meta http-equiv="x-ua-compatible" content="ie=edge"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, viewport-fit=cover"/>
+  <link rel="stylesheet" href="/style.css?v={% version %}" type="text/css"/>
+  {% block head %}{% endblock %}
+  <script src="/js/alpine.js?v={% version %}"></script>
 </head>
-<body>
-  <header>
-    <h1>{{ title }}</h1>
-  </header>
+<body class="container mx-auto">
+  <nav className="flex sm:justify-center space-x-4 m-8">
+    <a href="/" class="rounded-lg px-3 py-2 text-slate-700 font-medium hover:bg-slate-100 hover:text-slate-900">Home</a>
+    <a href="/" class="rounded-lg px-3 py-2 text-slate-700 font-medium hover:bg-slate-100 hover:text-slate-900">Posts</a>
+  </nav>
   <main>
-    {{ content | safe }}
+    {% block content %}
+      {{ content | safe }}
+    {% endblock %}
   </main>
-  <footer>
-    Writeups written by Torkel Opsahl <br/>
-    Webpages created by Jesper Førisdahl
-  </footer>
 </body>
 </html>
