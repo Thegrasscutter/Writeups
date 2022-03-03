@@ -2,7 +2,7 @@ import path from 'path';
 import fs from 'fs/promises';
 import parseFrontMatter from 'front-matter';
 import invariant from "tiny-invariant";
-import { marked } from "marked";
+import { marked } from 'marked';
 
 export type Post = {
 	slug: string;
