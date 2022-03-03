@@ -1,5 +1,10 @@
 node_modules
-/.cache
-/netlify/functions/server/index.js
+
+.cache
+.env
+.vercel
+.output
+
+/build/
 /public/build
-/.netlify
+/api/index.js
