@@ -1,4 +1,7 @@
 ---
+tags:
+  - post
+  - kringlecon2021Post
 title: Kringlecon 2021 - Customer Complaint Analysis
 ---
 

@@ -1,5 +1,9 @@
 ---
+tags:
+  - post
+  - kringlecon2021Post
 title: Kringlecon 2021 - Now Hiring
+layout: post
 ---
 # Introduction
 This is a challenge that I truely do reccomend doing. It teaches you something about AWS IMDS, something that is compleatly new to me. I suggest reading this page first to grasp a better understanding of what we are actually doing on the serverside. https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instancedata-data-retrieval.html

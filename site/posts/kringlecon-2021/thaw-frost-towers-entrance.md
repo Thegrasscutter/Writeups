@@ -1,4 +1,7 @@
 ---
+tags:
+  - post
+  - kringlecon2021Post
 title: Kringlecon 2021 - Thaw Frost Tower's Entrance
 ---
 # Introduction

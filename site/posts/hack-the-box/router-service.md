@@ -1,4 +1,7 @@
 ---
+tags:
+  - post
+  - hackTheBoxPost
 title: Hack the box - Router Service
 ---
 
