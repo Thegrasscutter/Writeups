@@ -1,3 +1,7 @@
+# Intro
+Good morning all!
+This box is presumably easy, but it is challenging for many as they are forced to learn something about android debugging. I do reccomend it as you learn about apk files and get some verry useful tools that will be handy on a daily basis!
+
 https://www.youtube.com/watch?v=NrxTBcjAL8A
 https://mobsf.github.io/docs/#/docker
 https://docs.docker.com/engine/install/
