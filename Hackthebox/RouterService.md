@@ -2,76 +2,100 @@
 Good morning all!
 This box is presumably easy, but it is challenging for many as they are forced to learn something about android debugging. I do reccomend it as you learn about apk files and get some verry useful tools that will be handy on a daily basis!
 
-https://www.youtube.com/watch?v=NrxTBcjAL8A
-https://mobsf.github.io/docs/#/docker
-https://docs.docker.com/engine/install/
-https://www.kali.org/docs/containers/installing-docker-on-kali/
-Dirb and nikto are useless, it always directs to the "suspicious activity screen"
-```
-+ http://10.129.167.150/_vti_cnf (CODE:200|SIZE:71)                                                                                                                                                                                       
-+ http://10.129.167.150/_vti_inf (CODE:200|SIZE:77)                                                                                                                                                                                       
-+ http://10.129.167.150/_vti_log (CODE:200|SIZE:69)                                                                                                                                                                                       
-+ http://10.129.167.150/_vti_map (CODE:200|SIZE:71)                                                                                                                                                                                       
-+ http://10.129.167.150/_vti_rpc (CODE:200|SIZE:70)                                                                                                                                                                                       
-+ http://10.129.167.150/_vti_script (CODE:200|SIZE:75)                                                                                                                                                                                    
-+ http://10.129.167.150/_vti_txt (CODE:200|SIZE:71)                                                                                                                                                                                       
-+ http://10.129.167.150/_www (CODE:200|SIZE:80)                                                                                                                                                                                           
-+ http://10.129.167.150/~adm (CODE:200|SIZE:73)                                                                                                                                                                                           
-+ http://10.129.167.150/~admin (CODE:200|SIZE:71)                                                                                                                                                                                         
-+ http://10.129.167.150/~administrator (CODE:200|SIZE:73)                                                                                                                                                                                 
-(!) WARNING: Too many responses for this directory seem to be FOUND.                                                                                                                                                                      
+# Enumeration
+So as always I start with a nmap scan, this shows me where I should start directing my efforts. It looks like a server on port 80. So I check that out while firing up dirb and nikto.
+Quickly I realize that dirb and nikto are useless. They get a hit on everything they try to enumerate. 
+```bash
+#Dirb output
++ http://10.129.167.150/_vti_cnf (CODE:200|SIZE:71)
++ http://10.129.167.150/_vti_inf (CODE:200|SIZE:77)
++ http://10.129.167.150/_vti_log (CODE:200|SIZE:69)
++ http://10.129.167.150/_vti_map (CODE:200|SIZE:71)
++ http://10.129.167.150/_vti_rpc (CODE:200|SIZE:70)
++ http://10.129.167.150/_vti_script (CODE:200|SIZE:75)
++ http://10.129.167.150/_vti_txt (CODE:200|SIZE:71)
++ http://10.129.167.150/_www (CODE:200|SIZE:80)
++ http://10.129.167.150/~adm (CODE:200|SIZE:73)
++ http://10.129.167.150/~admin (CODE:200|SIZE:71)
++ http://10.129.167.150/~administrator (CODE:200|SIZE:73)
+(!) WARNING: Too many responses for this directory seem to be FOUND.
     (Something is going wrong - Try Other Scan Mode)
-    (Use mode '-w' if you want to scan it anyway)
-                                                                               
+    (Use mode '-w' if you want to scan it anyway)        
 -----------------
 END_TIME: Sat Feb 26 14:43:58 2022
 DOWNLOADED: 107 - FOUND: 101
                                            
 ```
-
-Used Wfuzz to filter out the output
+So lets debug that. Upon trying to go to a random page I know shouldn't return results `http://10.129.167.150/Follow@TheCtrl+X` it always returns a `200 OK` and shows me a warning "suspicious activity screen".
+Ok fine, so lets bypass this. Therefore I started wfuzz and tried to run the same type of directory discovery, but I filtered out "Suspicious activity".
+Here is the results
 ```
 ┌──(kali㉿kali)-[~/Documents/HTB/RouterSpace]
-└─$ wfuzz -c -w /usr/share/wordlists/seclist/Discovery/Web-Content/directory-list-lowercase-2.3-big.txt --hs "Suspicious activity*" http://10.129.167.150/FUZZ                                                                   130 ⨯ 1 ⚙
+└─$ wfuzz -c -w /usr/share/wordlists/seclist/Discovery/Web-Content/directory-list-lowercase-2.3-big.txt --hs "Suspicious activity*" http://10.129.167.150/FUZZ 
  /usr/lib/python3/dist-packages/wfuzz/__init__.py:34: UserWarning:Pycurl is not compiled against Openssl. Wfuzz might not work correctly when fuzzing SSL sites. Check Wfuzz's documentation for more information.
 ********************************************************
 * Wfuzz 3.1.0 - The Web Fuzzer                         *
 ********************************************************
-
 Target: http://10.129.167.150/FUZZ
 Total requests: 1185254
-
 =====================================================================
-ID           Response   Lines    Word       Chars       Payload                                                                                                                                                                   
+ID           Response   Lines    Word       Chars       Payload
 =====================================================================
-
-000000001:   200        536 L    1382 W     25900 Ch    "# directory-list-lowercase-2.3-big.txt"                                                                                                                                  
-000000003:   200        536 L    1382 W     25900 Ch    "# Copyright 2007 James Fisher"                                                                                                                                           
-000000007:   200        536 L    1382 W     25900 Ch    "# license, visit http://creativecommons.org/licenses/by-sa/3.0/"                                                                                                         
-000000014:   200        536 L    1382 W     25900 Ch    "http://10.129.167.150/"                                                                                                                                                  
-000000013:   200        536 L    1382 W     25900 Ch    "#"                                                                                                                                                                       
-000000006:   200        536 L    1382 W     25900 Ch    "# Attribution-Share Alike 3.0 License. To view a copy of this"                                                                                                           
-000000010:   200        536 L    1382 W     25900 Ch    "#"                                                                                                                                                                       
-000000008:   200        536 L    1382 W     25900 Ch    "# or send a letter to Creative Commons, 171 Second Street,"                                                                                                              
-000000012:   200        536 L    1382 W     25900 Ch    "# on at least 1 host"                                                                                                                                                    
-000000011:   200        536 L    1382 W     25900 Ch    "# Priority-ordered case-insensitive list, where entries were found"                                                                                                      
-000000009:   200        536 L    1382 W     25900 Ch    "# Suite 300, San Francisco, California, 94105, USA."                                                                                                                     
-000000002:   200        536 L    1382 W     25900 Ch    "#"                                                                                                                                                                       
-000000005:   200        536 L    1382 W     25900 Ch    "# This work is licensed under the Creative Commons"                                                                                                                      
-000000004:   200        536 L    1382 W     25900 Ch    "#"                                                                                                                                                                       
-000000039:   301        10 L     16 W       173 Ch      "img"                                                                                                                                                                     
-000000547:   301        10 L     16 W       173 Ch      "css"                                                                                                                                                                     
-000000920:   301        10 L     16 W       171 Ch      "js"                                                                                                                                                                      
+000000001:   200        536 L    1382 W     25900 Ch    "# directory-list-lowercase-2.3-big.txt"
+000000003:   200        536 L    1382 W     25900 Ch    "# Copyright 2007 James Fisher"
+000000007:   200        536 L    1382 W     25900 Ch    "# license, visit http://creativecommons.org/licenses/by-sa/3.0/"
+000000014:   200        536 L    1382 W     25900 Ch    "http://10.129.167.150/" 
+000000013:   200        536 L    1382 W     25900 Ch    "#" 
+000000006:   200        536 L    1382 W     25900 Ch    "# Attribution-Share Alike 3.0 License. To view a copy of this" 
+000000010:   200        536 L    1382 W     25900 Ch    "#"
+000000008:   200        536 L    1382 W     25900 Ch    "# or send a letter to Creative Commons, 171 Second Street," 
+000000012:   200        536 L    1382 W     25900 Ch    "# on at least 1 host" 
+000000011:   200        536 L    1382 W     25900 Ch    "# Priority-ordered case-insensitive list, where entries were found" 
+000000009:   200        536 L    1382 W     25900 Ch    "# Suite 300, San Francisco, California, 94105, USA."
+000000002:   200        536 L    1382 W     25900 Ch    "#"
+000000005:   200        536 L    1382 W     25900 Ch    "# This work is licensed under the Creative Commons" 
+000000004:   200        536 L    1382 W     25900 Ch    "#" 
+000000039:   301        10 L     16 W       173 Ch      "img"
+000000547:   301        10 L     16 W       173 Ch      "css" 
+000000920:   301        10 L     16 W       171 Ch      "js" 
 000002576:   301        10 L     16 W       177 Ch      "fonts"
 ```
+Ok, so we found four valid pages `/img/, /css/, /js/, /fonts/` the other results are just error caused by the #. This will direct the browser to the index.html page.
+So this is a dead end.
+But the main page has a filedownload. Here you can download a file called router-service.apk.
+
+# Enumerating the .apk
+So a apk file is a android app that has been zipped in the simplest explanation, in depth it is a type of java archive (JAR). The majority of apps are presumably built in java, so treating it like that really simplyfies the process. The apks can easily be unzipped by most extraction tools, but you might need extra programs to really read the metadata as a simple unzip might not be able to convert the binaries to readable format. I'm not an expert at analyzing apk's so I apologize if some of the information here is lacking an in depth analysist.
+Ok so there are two methods for breaking analyzing the apk files. You either do a static analysist or run a dynamic instance and see what it does. For this writeup I will preform both to try to find what secrets lie beneth the hood of the apk.
+To really understand what you are doing, I strongly reccommend the talk by ![`_R00T_`](https://www.youtube.com/watch?v=NrxTBcjAL8A) at Mystikcon 2020.
+
+## Static analysist
+So static analysist, this approach requires you to unpack the apk file and manually look through the files for anomalies or secrets. It can be verry time comsuming but it can also be automated. First and formost we have to unpack the file. The easiest way to do so is by using apktool. Simply by using `apktool d router-service.apk`. It decompiles it and we can now explore the contents.
+Ok before running strings and finding every secret you can, lets explain the contents you should check first and what they are:
+- AndroidManifest.xml
+- classes.dex
+- resources.arsc
+- /res/
+- META-INF
+
+AndroidManifest.xml is the metadata about the app. It has the permissions required, what kind of activities/events it does, version, name and so on. So that is a nice start to understand it. An activity/event is everything it does.
+Further the /res/ directory is what kind of resources it has.
+
+
+
+https://mobsf.github.io/docs/#/docker
+https://docs.docker.com/engine/install/
+https://www.kali.org/docs/containers/installing-docker-on-kali/
 Installed docker and mobsf for static analysist of the app
 Didn't find anything interesting
 
+## Dynamic analysist
 Installed Genymotion on desktop
 Installed Frida on kali
 Started adb and connected it to genymotion
 Pushed the frida-server package to genymotion so i can try to pass and dynamicly read the app
 
+## Dynamic analysist
 Started the app with a default Samsung Galaxy 7 Build
 Then installed the app
 Further used adb to connect
