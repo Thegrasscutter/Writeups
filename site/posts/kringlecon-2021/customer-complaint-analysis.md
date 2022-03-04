@@ -4,6 +4,12 @@ tags:
   - kringlecon2021Post
 title: Customer Complaint Analysis
 layout: post.njk
+description: >
+  A short description of the article
+eleventyNavigation:
+  key: Post
+  title: Customer Complaint Analysis
+  parent: KringleCon2021Posts
 ---
 
 # Introduction

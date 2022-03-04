@@ -4,6 +4,15 @@ tags:
   - hackTheBoxPost
 title: devzat
 layout: post.njk
+description: >
+  A short description of the article
+image:
+  src: https://l.hdnux.com/350x235p/photos.demandstudios.com/getty/article/176/165/144453439_XS.jpg
+  alt: A random dude
+eleventyNavigation:
+  key: Post
+  title: devzat
+  parent: HackTheBoxPosts
 ---
 
 # Notes

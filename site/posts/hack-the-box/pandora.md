@@ -4,6 +4,12 @@ tags:
   - hackTheBoxPost
 title: Pandora
 layout: post.njk
+description: >
+  A short description of the article
+eleventyNavigation:
+  key: Post
+  title: Pandora
+  parent: HackTheBoxPosts
 ---
 
 ```

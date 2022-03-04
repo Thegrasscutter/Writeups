@@ -4,6 +4,12 @@ tags:
   - hackTheBoxPost
 title: Paper
 layout: post.njk
+description: >
+  A short description of the article
+eleventyNavigation:
+  key: Post
+  title: Paper
+  parent: HackTheBoxPosts
 ---
 # Introduction
 This is a relativly easy box, it has everything you would need to get started. There isn't any manual exploits, it's just a matter of choosing the right tools for the job. 

@@ -4,6 +4,12 @@ tags:
   - kringlecon2021Post
 title: Strange USB Device
 layout: post.njk
+description: >
+  A short description of the article
+eleventyNavigation:
+  key: Post
+  title: Strange USB Device
+  parent: KringleCon2021Posts
 ---
 # Introduction
 This is a challenge with potential to learn alot, or just cruise through for potential CTF points. The description of the challenge is as follows:

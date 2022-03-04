@@ -2,8 +2,20 @@
 tags:
   - post
   - hackTheBoxPost
-title: backdoor
 layout: post.njk
+title: backdoor
+description: >
+  A short description of the article
+keywords:
+  - Hack the box
+  - Test
+image:
+  src: ./images/vaskeklut.jpg
+  alt: Vaskeklut
+eleventyNavigation:
+  key: Post
+  title: backdoor
+  parent: HackTheBoxPosts
 ---
 
 # Introduction

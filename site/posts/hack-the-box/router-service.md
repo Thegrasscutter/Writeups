@@ -4,6 +4,12 @@ tags:
   - hackTheBoxPost
 title: Router Service
 layout: post.njk
+description: >
+  A short description of the article
+eleventyNavigation:
+  key: Post
+  title: Router Service
+  parent: HackTheBoxPosts
 ---
 
 

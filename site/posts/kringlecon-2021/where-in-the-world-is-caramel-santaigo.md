@@ -4,6 +4,12 @@ tags:
   - kringlecon2021Post
 title: Where in the World is Caramel Santaigo
 layout: post.njk
+description: >
+  A short description of the article
+eleventyNavigation:
+  key: Post
+  title: Where in the World is Caramel Santaigo
+  parent: KringleCon2021Posts
 ---
 
 # Introduction

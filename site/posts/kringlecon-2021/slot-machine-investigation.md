@@ -4,6 +4,12 @@ tags:
   - kringlecon2021Post
 title: Slot Machine Investigation
 layout: post.njk
+description: >
+  A short description of the article
+eleventyNavigation:
+  key: Post
+  title: Slot Machine Investigation
+  parent: KringleCon2021Posts
 ---
 # Introduction
 This challenge is all about exploiting Jacks slotsystem. Everything can be done in browser and I really reccommend using firefox, simply becuase the interface is less confusing.

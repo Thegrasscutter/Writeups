@@ -1,0 +1,227 @@
+:root {
+  --background-color: hsl(231deg, 15%, 18%);
+  --background-lighter: hsl(232deg, 14%, 31%);
+  --foreground-color: hsl(60deg, 30%, 96%);
+  --comment-color: hsl(255deg, 27%, 51%);
+  --cyan-color: hsl(191deg, 97%, 77%);
+  --green-color: hsl(135deg, 94%, 65%);
+  --orange-color: hsl(31deg, 100%, 71%);
+  --pink-color: hsl(326deg, 100%, 74%);
+  --purple-color: hsl(265deg, 89%, 78%);
+  --red-color: hsl(0deg, 100%, 67%);
+  --yellow-color: hsl(65deg, 92%, 76%);
+}
+
+
+body {
+  margin: 0;
+  padding: 0;
+  font-size: 18px;
+  background-color: var(--background-color);
+  color: var(--foreground-color);
+  font-family: 'Space Grotesk', sans-serif;
+  margin: 20px 0px;
+}
+
+/* Navbar */ 
+nav {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 12px;
+}
+
+nav > ul {
+  list-style: none;
+  margin: 0;
+  padding: 6px 0px;
+}
+
+nav > ul a > li {
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  border: 2px solid var(--comment-color);
+  border-radius: 5px;
+  padding: 20px;
+}
+
+nav > ul a > li:hover {
+  border: 2px solid var(--purple-color);
+  text-align: center;
+}
+
+nav > ul a {
+  font-family: 'Press Start 2P', sans-serif;
+  color: var(--purple-color);
+}
+
+@media screen and (max-width: 420px) {
+  nav > ul a li {
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    border: 2px solid var(--comment-color);
+    border-radius: 5px;
+    padding: 10px;
+  }
+}
+
+
+
+/* Main */
+main {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 12px;
+}
+
+/* Posts showcase */
+div.posts-showcase {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-items: baseline;
+}
+
+div.posts-showcase .post-card-outer {
+  margin: 6px;
+  background-color: var(--background-color);
+  border: 2px solid var(--cyan-color);
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+div.posts-showcase .post-card-outer:hover {
+  margin: 6px;
+  background-color: var(--background-lighter);
+  border-radius: 5px;
+}
+
+div.posts-showcase .post-card-outer .post-card {
+  display: flex;
+  flex-direction: row;
+  padding: 6px;
+}
+
+div.posts-showcase .post-card-outer .post-card .post-content {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  padding: 0px 12px;
+  justify-content: center;
+}
+
+div.posts-showcase .post-card-outer .post-card .post-content h4 {
+  margin: 0;
+  color: var(--cyan-color);
+  font-size: 18px;
+}
+
+div.posts-showcase .post-card-outer .post-card .post-content p {
+  margin: 0;
+  font-size: 16px;
+}
+
+div.posts-showcase .post-card-outer .post-card .post-image {
+  flex-grow: 1;
+  vertical-align: middle;
+}
+
+div.posts-showcase .post-card-outer .post-card .post-image picture {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+div.posts-showcase .post-card-outer .post-card .post-image picture img {
+  width: 100%;
+  border-radius: 5px;
+}
+
+/* Posts showcase mobile */
+
+@media screen and (max-width: 1000px) {
+  div.posts-showcase {
+    flex-direction: column;
+  }
+
+  div.posts-showcase .post-card-outer {
+    margin: 6px 0;
+  }
+}
+
+/* Breadcrumbs */
+.breadcrumbs {
+  display: flex;
+  flex-direction: row;
+}
+
+/* Content */
+pre {
+  background: #000;
+  border: 1px solid #44475a;
+  border-radius: 5px;
+  border-left: 3px solid #50fa7b;
+  color: var(--foreground-color);
+  page-break-inside: avoid;
+  font-family: 'Fira Code', monospace;
+  font-size: 15px;
+  line-height: 1.6;
+  margin-bottom: 1.6em;
+  max-width: 100%;
+  overflow: auto;
+  padding: 1em 1.5em;
+  display: block;
+  word-wrap: break-word;
+}
+
+pre code {
+  background-color: #000;
+}
+
+code {
+  font-family: 'Fira Code', monospace;
+  background-color: var(--background-lighter);
+}
+
+h1 {
+  font-size: 1.2em;
+  font-weight: bold;
+  font-family: 'Press Start 2P', sans-serif;
+  margin-top: 20px;
+  color: var(--red-color);
+}
+h2 {
+  font-size: 1.15em;
+  font-weight: bold;
+  font-family: 'Press Start 2P', sans-serif;
+  margin-top: 17px;
+  color: var(--red-color);
+}
+h3 {
+  font-size: 1.10em;
+  font-weight: bold;
+  font-family: 'Press Start 2P', sans-serif;
+  color: var(--red-color);
+}
+h4 {
+  font-size: 1.05em;
+  font-weight: bold;
+  font-family: 'Press Start 2P', sans-serif;
+  color: var(--red-color);
+}
+h5 {
+  font-size: 1.02em;
+  font-weight: bold;
+  font-family: 'Press Start 2P', sans-serif;
+  color: var(--red-color);
+}
+p {
+  font-size: 1em;
+  font-weight: normal;
+}
+a {
+  color: var(--cyan-color);
+  text-decoration: none;
+}

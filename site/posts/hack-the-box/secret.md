@@ -4,6 +4,12 @@ tags:
   - hackTheBoxPost
 title: Secret
 layout: post.njk
+description: >
+  A short description of the article
+eleventyNavigation:
+  key: Post
+  title: Secret
+  parent: HackTheBoxPosts
 ---
 
 # Introduction

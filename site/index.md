@@ -3,22 +3,35 @@ title: Torkels writeups
 layout: base.njk
 pagination:
   data: collections.post
-  size: 10
+  size: 20
   alias: posts
-  #TODO: Implement filter for date on posts
-  #filter:
-  #  - date
+eleventyNavigation:
+  key: Index
+  title: Home
 ---
 
 ## Introduction
 
 This page is for writeups and writeups only.
 
-## Latest 10 posts
+## Latest posts
 
-<ol>
+<div class="posts-showcase">
   {%- for post in posts -%}
-    <li> <a href={{ post.url }}>{{ post.data.title }} </a></li>
+    <div class="post-card-outer">
+      <a href="{{ post.url }}">
+        <div class="post-card">
+          <div class="post-content">
+            <h4>
+                {{- post.data.title -}}
+            </h4>
+            <p>
+              {{- post.data.description -}}
+            </p>
+          </div>
+        </div>
+      </a>
+    </div>
   {%- endfor -%}
-</ol>
+</div>
 
