@@ -2,7 +2,8 @@
 tags:
   - post
   - hackTheBoxPost
-title: Hack the box - Router Service
+title: Router Service
+layout: post.njk
 ---
 
 

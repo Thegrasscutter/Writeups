@@ -2,7 +2,8 @@
 tags:
   - post
   - hackTheBoxPost
-title: Hack the box - Paper
+title: Paper
+layout: post.njk
 ---
 # Introduction
 This is a relativly easy box, it has everything you would need to get started. There isn't any manual exploits, it's just a matter of choosing the right tools for the job. 

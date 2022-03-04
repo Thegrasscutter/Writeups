@@ -2,8 +2,8 @@
 tags:
   - post
   - hackTheBoxPost
-title: Hack the box - backdoor
-layout: post
+title: backdoor
+layout: post.njk
 ---
 
 # Introduction

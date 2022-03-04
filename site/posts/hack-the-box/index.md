@@ -1,6 +1,7 @@
 ---
 title: Hack the box
 layout: post
+tags: postCollection
 ---
 
 <ul>

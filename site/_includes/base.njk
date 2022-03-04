@@ -12,11 +12,14 @@
   <link rel="stylesheet" href="/style.css?v={% version %}" type="text/css"/>
   {% block head %}{% endblock %}
   <script src="/js/alpine.js?v={% version %}"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
 <body class="container mx-auto">
-  <nav className="flex sm:justify-center space-x-4 m-8">
-    <a href="/" class="rounded-lg px-3 py-2 text-slate-700 font-medium hover:bg-slate-100 hover:text-slate-900">Home</a>
-    <a href="/" class="rounded-lg px-3 py-2 text-slate-700 font-medium hover:bg-slate-100 hover:text-slate-900">Posts</a>
+  <nav className="flex sm:justify-center py-5">
+    <a href="/" class="rounded-lg py-8 text-slate-700 font-medium hover:bg-slate-100 hover:text-slate-900">Home</a>
+    <a href="/posts" class="rounded-lg py-8 py-2 text-slate-700 font-medium hover:bg-slate-100 hover:text-slate-900">Posts</a>
   </nav>
   <main>
     {% block content %}

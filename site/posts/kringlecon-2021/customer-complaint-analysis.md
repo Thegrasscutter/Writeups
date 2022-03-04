@@ -2,7 +2,8 @@
 tags:
   - post
   - kringlecon2021Post
-title: Kringlecon 2021 - Customer Complaint Analysis
+title: Customer Complaint Analysis
+layout: post.njk
 ---
 
 # Introduction

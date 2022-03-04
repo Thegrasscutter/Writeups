@@ -2,7 +2,8 @@
 tags:
   - post
   - kringlecon2021Post
-title: Kringlecon 2021 - Strange USB Device
+title: Strange USB Device
+layout: post.njk
 ---
 # Introduction
 This is a challenge with potential to learn alot, or just cruise through for potential CTF points. The description of the challenge is as follows:

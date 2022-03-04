@@ -2,7 +2,8 @@
 tags:
   - post
   - hackTheBoxPost
-title: Hack the box - Pandora
+title: Pandora
+layout: post.njk
 ---
 
 ```

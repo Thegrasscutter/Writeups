@@ -2,7 +2,8 @@
 tags:
   - post
   - kringlecon2021Post
-title: Kringlecon 2021 - Where in the World is Caramel Santaigo
+title: Where in the World is Caramel Santaigo
+layout: post.njk
 ---
 
 # Introduction

@@ -2,7 +2,8 @@
 tags:
   - post
   - kringlecon2021Post
-title: Kringlecon 2021 - Thaw Frost Tower's Entrance
+title: Thaw Frost Tower's Entrance
+layout: post.njk
 ---
 # Introduction
 This challenge will grant us access to Jacks Frost Tower casino, it's ranked 2/5 christmas trees in difficulty. To gain access to this challenge you will need a wifi-adapter that you recived at the entrance. The description for the  challenge is:

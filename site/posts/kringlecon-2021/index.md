@@ -1,6 +1,7 @@
 ---
 title: Kringlecon 2021
 layout: post
+tags: postCollection
 ---
 
 <ul>

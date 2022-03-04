@@ -7,3 +7,48 @@
     color: transparent;
   }
 }
+
+body {
+  margin: 0;
+  padding: 0;
+  font-size: 16px;
+  font-family: 'Press Start 2P', sans-serif;
+  background-color: #44475a;
+  color: #50fa7b;
+}
+
+h1 {
+  font-size: 2rem;
+  font-weight: bold;
+}
+h2 {
+  font-size: 1.75rem;
+  font-weight: bold;
+}
+h3 {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+h4 {
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+h5 {
+  font-size: 1rem;
+  font-weight: bold;
+}
+p {
+  font-size: 1rem;
+  font-weight: normal;
+  font-family: 'Press Start 2P', sans-serif;
+  word-break: break-all;
+}
+
+code {
+  line-break: auto;
+  word-break: break-all;
+}
+
+a:hover {
+  text-decoration: underline;
+}

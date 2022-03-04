@@ -2,7 +2,8 @@
 tags:
   - post
   - hackTheBoxPost
-title: Hack the box - devzat
+title: devzat
+layout: post.njk
 ---
 
 # Notes

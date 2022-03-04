@@ -1,4 +1,8 @@
 ---
 layout: base.njk
 ---
-<article>{{ content | safe}}</article>
+<article>
+  {% block content %}
+      {{ content | safe }}
+    {% endblock %}
+</article>

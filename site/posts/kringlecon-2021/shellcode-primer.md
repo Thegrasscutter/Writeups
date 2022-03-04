@@ -2,7 +2,8 @@
 tags:
   - post
   - kringlecon2021Post
-title: Kringlecon 2021 - Shellcode Primer
+title: Shellcode Primer
+layout: post.njk
 ---
 # Introduction
 This is Jacks shellcode school, it is a great challenge to brush up on your assembly skills. The challenge takes you upon a set of ways to read, write and manipulate the stack. There are 10 steps to theis challenge, but we will only be focusing at the last step as it is a collection of the previous ones.

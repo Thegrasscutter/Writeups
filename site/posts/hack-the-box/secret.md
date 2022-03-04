@@ -2,7 +2,8 @@
 tags:
   - post
   - hackTheBoxPost
-title: Hack the box - Secret
+title: Secret
+layout: post.njk
 ---
 
 # Introduction
