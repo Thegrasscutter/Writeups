@@ -560,6 +560,27 @@ Databases:
 .quit to exit
 [admin@10.10.11.118] Database: 1
 Starting InfluxDB shell - .back to go back
+[admin@10.10.11.118/devzat] $ show measurements       
+{ 
+    "results": [ 
+        {          
+            "series": [   
+                {            
+                    "columns": [   
+                        "name"     
+                    ], 
+                    "name": "measurements",    
+                    "values": [ 
+                        [ 
+                            "user"  
+                        ]  
+                    ]  
+                }  
+            ],
+            "statement_id": 0 
+        }  
+    ]
+}
 [admin@10.10.11.118/devzat] $ select * from "user"
 {
     "results": [
