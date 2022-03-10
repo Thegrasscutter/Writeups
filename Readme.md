@@ -8,4 +8,3 @@ TGC is a junior penetration tester that spends his days either behind screens or
 
 ## Jezpoz
 Jezpoz is a senior frontend developer that prioritizes getting the job done before getting paid. Once he sets his mind to something only the lack of coffee could stop him. He is currently working at Oslo Digital, maintaining every aspect of their digital existance. 
-
