@@ -4,7 +4,7 @@ layout: base.njk
 eleventyNavigation:
   key: Posts
   title: Posts
-  index: 1
+  order: 2
 ---
 
 # Posts

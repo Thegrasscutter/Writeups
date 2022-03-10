@@ -2,6 +2,8 @@
 title: Kringlecon 2021
 layout: post
 tags: postCollection
+description: >
+  A short description of page
 eleventyNavigation:
   key: KringleCon2021Posts
   title: Kringlecon 2021

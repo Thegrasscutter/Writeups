@@ -4,7 +4,7 @@ layout: base.njk
 eleventyNavigation:
   key: About
   title: About
-  index: 2
+  order: 3
 ---
 
 ## About this page

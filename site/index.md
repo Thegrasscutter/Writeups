@@ -8,7 +8,7 @@ pagination:
 eleventyNavigation:
   key: Index
   title: Home
-  index: 0
+  order: 1
 ---
 
 ## Introduction
