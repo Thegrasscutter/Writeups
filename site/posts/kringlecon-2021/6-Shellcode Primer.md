@@ -1,3 +1,13 @@
+---
+title: Shellcode Prime
+layout: base.njk
+description: >
+  A short description of page
+tags:
+  - post
+  - KringleCon2021Posts
+---
+
 # Introduction
 This is Jacks shellcode school, it is a great challenge to brush up on your assembly skills. The challenge takes you upon a set of ways to read, write and manipulate the stack. There are 10 steps to theis challenge, but we will only be focusing at the last step as it is a collection of the previous ones.
 Complete the Shellcode Primer in Jack's office. According to the last challenge, what is the secret to KringleCon success? "All of our speakers and organizers, providing the gift of ____, free to the community." Talk to Chimney Scissorsticks in the NetWars area for hints

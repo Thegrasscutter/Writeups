@@ -1,3 +1,13 @@
+---
+title: Devzat
+layout: base.njk
+description: >
+  A short description of page
+tags:
+  - post
+  - hackTheBoxPost
+---
+
 # Introduction
 So this is a fun box, definetly my favorite. It has all the elements you need, rabbitholes, enumeration, exploits, creative thinking. Actually a more beginner friendly box than one might think. The real challenge is being creative.
 # Enumeration

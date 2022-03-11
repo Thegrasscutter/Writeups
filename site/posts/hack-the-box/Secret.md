@@ -1,3 +1,13 @@
+---
+title: Secret
+layout: base.njk
+description: >
+  A short description of page
+tags:
+  - post
+  - hackTheBoxPost
+---
+
 # Introduction
 This is a box that makes you learn a bit of json, git and make. Three things I didn't know beforehand, so it's a great opportunity to learn!
 

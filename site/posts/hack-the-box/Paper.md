@@ -1,3 +1,13 @@
+---
+title: Paper
+layout: base.njk
+description: >
+  A short description of page
+tags:
+  - post
+  - hackTheBoxPost
+---
+
 # Introduction
 This is a relativly easy box, it has everything you would need to get started. There isn't any manual exploits, it's just a matter of choosing the right tools for the job. 
 I do reccomend this box for beginners.

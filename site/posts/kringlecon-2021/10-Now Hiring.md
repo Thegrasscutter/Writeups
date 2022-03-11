@@ -1,3 +1,13 @@
+---
+title: Now Hiring
+layout: base.njk
+description: >
+  A short description of page
+tags:
+  - post
+  - KringleCon2021Posts
+---
+
 # Introduction
 This is a challenge that I truely do reccomend doing. It teaches you something about AWS IMDS, something that is compleatly new to me. I suggest reading this page first to grasp a better understanding of what we are actually doing on the serverside. https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instancedata-data-retrieval.html
 The description for the challenge is: *What is the secret access key for the Jack Frost Tower job applications server? Brave the perils of Jack's bathroom to get hints from Noxious O. D'or.*

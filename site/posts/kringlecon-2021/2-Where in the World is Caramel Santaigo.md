@@ -1,3 +1,13 @@
+---
+title: Where in the World is Caramel Santaigo
+layout: base.njk
+description: >
+  A short description of page
+tags:
+  - post
+  - KringleCon2021Posts
+---
+
 # Introduction
 ## The challenge
 The challenge is to undergo open source intelligence to pinpoint where and who the travelling elf is. The clue here is to read everything closely and try to relate every hint to something to identify the elf with. The answer for the challenge will most likely vary from user to user, so you will have to probably find your own solution based on the same steps I took.

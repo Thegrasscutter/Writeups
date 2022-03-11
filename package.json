@@ -1,0 +1,31 @@
+{
+  "name": "writeups",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "ELEVENTY_PRODUCTION=true eleventy",
+    "start": "eleventy --serve"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jezpoz/Writeups.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jezpoz/Writeups/issues"
+  },
+  "homepage": "https://github.com/jezpoz/Writeups#readme",
+  "devDependencies": {
+    "@11ty/eleventy": "^1.0.0",
+    "@11ty/eleventy-img": "^1.1.0",
+    "@11ty/eleventy-navigation": "^0.3.2",
+    "alpinejs": "^3.9.1",
+    "html-minifier": "^4.0.0"
+  },
+  "dependencies": {
+    "tailwindcss": "^3.0.23"
+  }
+}

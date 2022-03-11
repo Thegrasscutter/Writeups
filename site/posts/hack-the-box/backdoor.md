@@ -1,3 +1,12 @@
+---
+title: backdoor
+layout: base.njk
+description: >
+  A short description of page
+tags:
+  - post
+  - hackTheBoxPost
+---
 # Introduction
 This box prooved to be quite intresting, it teaches you different techniques whithin directory traversal, remote gdb and finally a traditional privesc. I do reccomend this box as a cool way to get to know better tools, but I also have to add that it might be annoying to do becuase of the initial foothold might be one user per session.
 

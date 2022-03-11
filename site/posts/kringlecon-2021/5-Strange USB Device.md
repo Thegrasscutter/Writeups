@@ -1,3 +1,13 @@
+---
+title: Strange USB Device
+layout: base.njk
+description: >
+  A short description of page
+tags:
+  - post
+  - KringleCon2021Posts
+---
+
 # Introduction
 This is a challenge with potential to learn alot, or just cruise through for potential CTF points. The description of the challenge is as follows:
 Assist the elves in reverse engineering the strange USB device. Visit Santa's Talks Floor and hit up Jewel Loggins for advice.
