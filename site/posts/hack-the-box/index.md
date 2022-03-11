@@ -12,9 +12,9 @@ eleventyNavigation:
 
 ## Hack the box
 
-This is so much fun!
+A collection of writeups from the website hackthebox. Check it out, you might just learn something!
 
-## Boxes I have hacked
+## Available writeups
 
 <div class="posts-showcase">
   {%- for post in collections.hackTheBoxPost -%}
