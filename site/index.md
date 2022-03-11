@@ -1,5 +1,5 @@
 ---
-title: Torkels writeups
+title: Thegrasscutters writeups
 layout: base.njk
 pagination:
   data: collections.post
